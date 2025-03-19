@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ananta Realty - Custom Forms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 90%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .form-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #28a745;
+        }
+        .form-card img {
+            width: 40px;
+            height: 40px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Custom Forms</h2>
+        <div class="form-container">
+            <div class="form-card">
+                <img src="tasks_icon.png" alt="Tasks">
+                <h3>Tasks</h3>
+            </div>
+            <div class="form-card">
+                <img src="contacts_icon.png" alt="Contacts">
+                <h3>Contacts</h3>
+            </div>
+            <div class="form-card">
+                <img src="inbound_mails_icon.png" alt="Inbound Mails">
+                <h3>Inbound Mails</h3>
+            </div>
+            <div class="form-card">
+                <img src="notes_icon.png" alt="Notes">
+                <h3>Notes</h3>
+            </div>
+            <div class="form-card">
+                <img src="outbound_mails_icon.png" alt="Outbound Mails">
+                <h3>Outbound Mails</h3>
+            </div>
+            <div class="form-card">
+                <img src="outbound_sms_icon.png" alt="Outbound SMS">
+                <h3>Outbound SMS</h3>
+            </div>
+            <div class="form-card">
+                <img src="userwise_usage_icon.png" alt="Userwise Usage Details">
+                <h3>Userwise Usage Details</h3>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

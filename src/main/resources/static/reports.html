@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Reports - Ananta Realty</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #0ae12e;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 5px;
+        }
+        .report-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .report-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33.333% - 15px);
+            min-width: 300px;
+        }
+        .report-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .report-card p {
+            font-size: 14px;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .report-card {
+                flex: 1 1 calc(50% - 15px);
+            }
+        }
+        @media (max-width: 480px) {
+            .report-card {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <div class="section-title">CRM - Leads Count Reports</div>
+        <div class="report-container">
+            <div class="report-card"><h3>Leads Count by Owner, Stage</h3><p>This report shows all Leads, owned by each team member at different stages.</p></div>
+            <div class="report-card"><h3>Leads Count by Source, Stage</h3><p>This report shows all Leads, generated from each lead source at different stages.</p></div>
+            <div class="report-card"><h3>Closed Won Leads by Owner</h3><p>This report shows all Closed Won Lead Counts owned by each team member for the last six months.</p></div>
+            <div class="report-card"><h3>Closed Won Leads by Source</h3><p>This report shows all Closed Won Lead Counts generated from each marketing source for the last six months.</p></div>
+            <div class="report-card"><h3>Closed Lost Leads by Owner</h3><p>This report shows all Closed Lost Lead Counts owned by each team member for the last six months.</p></div>
+            <div class="report-card"><h3>Closed Lost Leads by Source</h3><p>This report shows all Closed Lost Lead Counts generated from each marketing source for the last six months.</p></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">CRM - Leads Revenue Reports</div>
+        <div class="report-container">
+            <div class="report-card"><h3>Active Leads by Owner, and Expected Revenue</h3><p>Get insights into how much revenue each Lead Owner can expect at each stage with this report.</p></div>
+            <div class="report-card"><h3>Active Leads by Expected Closure, and Revenue</h3><p>Monitor the progress of your sales pipeline, including stages and lead sources.</p></div>
+            <div class="report-card"><h3>All Active Leads</h3><p>This report shows all Active Leads owned by each team member.</p></div>
+            <div class="report-card"><h3>Closed Won Revenue by Lead Owner</h3><p>This report shows all Closed Won Leads owned by each team member for the last six months.</p></div>
+            <div class="report-card"><h3>Closed Won Revenue by Lead Source</h3><p>This report shows all Closed Won Leads generated from each marketing source for the last six months.</p></div>
+            <div class="report-card"><h3>All Closed Won Leads</h3><p>This report shows all Closed Won Leads owned by each team member.</p></div>
+            <div class="report-card"><h3>Lost Revenue by Sales User</h3><p>This report shows all Closed Lost Leads owned by each team member for the last six months.</p></div>
+            <div class="report-card"><h3>Lost Revenue by Lead Source</h3><p>This report shows all Closed Lost Leads generated from each marketing source for the last six months.</p></div>
+            <div class="report-card"><h3>All Closed Lost Leads</h3><p>This report shows all Closed Lost Leads owned by each team member.</p></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">CRM - Calls Report</div>
+        <div class="report-container">
+            <div class="report-card"><h3>Incoming/Outgoing Calls - Last 30 Days</h3><p>This report shows team member-wise all incoming and outgoing call count and call duration.</p></div>
+            <div class="report-card"><h3>Answered/Unanswered Calls - Last 30 Days</h3><p>This report shows team member-wise all answered and unanswered calls and call duration.</p></div>
+            <div class="report-card"><h3>Leads First Response - Last 30 Days</h3><p>Track your sales team's first response time based on lead assigned time and first call made.</p></div>
+            <div class="report-card"><h3>Calls Feedback - Last 30 Days</h3><p>This report shows team member-wise call feedback - not connected, connected, call back, etc.</p></div>
+            <div class="report-card"><h3>Calls - Last 30 Days</h3><p>This report shows team member-wise last 30 days incoming and outgoing call details.</p></div>
+            <div class="report-card"><h3>Calls - All Days</h3><p>This report shows team member-wise all incoming and outgoing call details.</p></div>
+            <div class="report-card"><h3>Leads - All Days</h3><p>This report shows team member-wise all lead details - Name, mobile, stage, etc.</p></div>
+            <div class="report-card"><h3>CALLS TODAY</h3><p>TODAY'S CALLS DATA</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">CRM - Tasks Reports</div>
+        <div class="report-container">
+            <div class="report-card"><h3>Incoming/All Over due Tasks-Detailed</h3><p>This report shows team member-wise allopen over due tasks details.</p></div>
+            <div class="report-card"><h3>All Open Tasks-Detailed</h3><p>This report shows team member-wise all Open (planned/overdue)tasks Details</p></div>
+            <div class="report-card"><h3>All Completed Tasks - Detailed</h3><p>All Completed Tasks - Detailed This report shows team member wise all completed tasks details.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">Usage Reports</div>
+        <div class="report-container">
+            <div class="report-card"><h3>Crm Usage Details</h3><p>To View the Users last CRM Usage Information</p></div>
+        </div>
+</body>
+</html>

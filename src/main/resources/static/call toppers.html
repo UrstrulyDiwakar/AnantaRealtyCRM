@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header h1 {
+            font-size: 20px;
+            color: #333;
+        }
+        .filter-container {
+            display: flex;
+            align-items: center;
+        }
+        .filter-container input, .filter-container select, .filter-container button {
+            margin: 0 5px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .filter-container button {
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .cards-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+        }
+        .card h2 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .stat-box {
+            background: #eef3f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 5px solid #14d20e;
+        }
+        .highlight {
+            color: rgb(6, 111, 27);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .icon {
+            color: green;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>19 to 25 Feb 2025 - Total Days: 7</h1>
+            <div class="filter-container">
+                <input type="date" value="2025-02-19"> - <input type="date" value="2025-02-25">
+                <select>
+                    <option>Select Employees</option>
+                </select>
+                <button><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+        
+        <div class="cards-container">
+            <div class="card">
+                <h2>TOPPER BY CALLS</h2>
+                <div class="stat-box"><strong>Top Dialer:</strong> <span class="highlight">Shailaja</span> <br> Dialed Calls: 1429</div>
+                <div class="stat-box"><strong>Top Answered:</strong> <span class="highlight">Hema</span> <br> Received Calls: 140</div>
+                <div class="stat-box"><strong>Top Caller:</strong> <span class="highlight">Sarswathi</span> <br> Total Calls: 1509</div>
+            </div>
+            
+            <div class="card">
+                <h2>TOPPER BY DURATION</h2>
+                <div class="stat-box"><strong>Highest Total Duration:</strong> <span class="highlight">Shailaja</span> <br> Duration: 10h 51m 35s</div>
+                <div class="stat-box"><strong>Longest Duration:</strong> <span class="highlight">Indhu</span> <br> Duration: 00h 58m 30s (INCOMING) <br> Call To: divya409 <br> Call Time: 23 Feb 2025 03:40:56 PM</div>
+            </div>
+            
+            <div class="card">
+                <h2>AVERAGE CALLS DURATION</h2>
+                <div class="stat-box"><strong>Average Duration per Incoming Call:</strong> 00h 01m 05s (Total Calls: 1014)</div>
+                <div class="stat-box"><strong>Average Duration per Outgoing Call:</strong> 00h 00m 46s (Total Calls: 6965)</div>
+                <div class="stat-box"><strong>Average Duration per Call:</strong> 00h 00m 48s (Total Calls: 7979)</div>
+                <div class="stat-box"><strong>Average Duration per Day:</strong> 15h 12m 35s (Total Calls: 7979)</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .tabs {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .tabs div {
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .tabs .active {
+            border-bottom: 2px solid green;
+        }
+        .container {
+            max-width: 1800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .search-bar, .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #f4f4f4;
+        }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 12px;
+            border: none;
+            background: green;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <div class="active" onclick="loadPage('users')">Users</div>
+        <div onclick="loadPage('organization.html')">Organization</div>
+    </div>
+    
+    <!-- Container for content -->
+    <div id="usersContent">
+        <div class="container">
+            <div class="toolbar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button>Search</button>
+                </div>
+                <div class="actions">
+                    <button onclick="loadAddUserPage()">+ Add</button> <!-- ✅ Added onclick to load addusers.html -->
+                    <button onclick="fetchUsers()">Refresh</button> <!-- ✅ Added onclick to refresh data -->
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>NAME</th>
+                        <th>EMAIL</th>
+                        <th>MOBILE</th>
+                        <th>PROFILE</th>
+                        <th>REPORTING TO</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- ✅ This will be populated dynamically -->
+                </tbody>
+            </table>
+            <div class="pagination">
+                <span id="paginationInfo">1 - 0 / 0</span> <!-- ✅ Will update dynamically -->
+                <div>
+                    <button onclick="previousPage()"><</button>
+                    <button onclick="nextPage()">></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Iframe for loading organization page -->
+    <iframe id="contentFrame" src="" style="width: 100%; height: 100vh; border: none; display: none;"></iframe>
+    
+    <script>
+        let currentPage = 1;
+        const usersPerPage = 10; // Adjust as needed
+        let allUsers = []; // To store all fetched users
+        let originalUsersContent = ''; // ✅ Store the original content of usersContent
+
+        // ✅ Save the original content of usersContent when the page loads
+        window.onload = function() {
+            originalUsersContent = document.getElementById('usersContent').innerHTML;
+            fetchUsers();
+        };
+        
+
+        // ✅ Function to fetch users from the backend
+        function fetchUsers() {
+            fetch('http://localhost:8085/api/getUsers', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                allUsers = data; // Store the fetched users
+                displayUsers(); // Display the users for the current page
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+                alert('Failed to load users. Please try again.');
+            });
+        }
+
+        // ✅ Function to display users in the table based on the current page
+        function displayUsers() {
+            const tbody = document.getElementById('userTableBody');
+//             if (!tbody) {
+//                 loadPage('users');
+//                 return;
+//             }
+            tbody.innerHTML = ''; // Clear existing rows
+
+            const start = (currentPage - 1) * usersPerPage;
+            const end = start + usersPerPage;
+            const usersToDisplay = allUsers.slice(start, end);
+
+            usersToDisplay.forEach(user => {
+                const row = document.createElement('tr');
+                row.setAttribute('onclick', `selectUser('${user.username}')`);
+                row.innerHTML = `
+                    <td><input type="checkbox"></td>
+                    <td>${user.username || ''}</td>
+                    <td>${user.email || ''}</td>
+                    <td>${user.mobile || ''}</td>
+                    <td>${user.profile || ''}</td>
+                    <td>${user.reportingTo || ''}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update pagination info
+            const totalUsers = allUsers.length;
+            const totalPages = Math.ceil(totalUsers / usersPerPage);
+            document.getElementById('paginationInfo').textContent = `${start + 1} - ${Math.min(end, totalUsers)} / ${totalUsers}`;
+        }
+
+        // ✅ Pagination functions
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayUsers();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(allUsers.length / usersPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayUsers();
+            }
+        }
+
+        // ✅ Load users when the page is first loaded
+        window.onload = function() {
+            fetchUsers();
+        };
+
+        function loadPage(page) {
+        	alert("invoked loadpage in userrs.html file.... ");
+            const userTab = document.querySelector('.tabs div:first-child');
+            const orgTab = document.querySelector('.tabs div:last-child');
+
+            if (page === 'users') {
+//                 userTab.classList.add('active');
+//                 orgTab.classList.remove('active');
+//                 document.getElementById('usersContent').style.display = 'block';
+//                 document.getElementById('contentFrame').style.display = 'none';
+//                 fetchUsers(); // ✅ Fetch users when the "Users" tab is clicked
+
+            	  userTab.classList.add('active');
+                  orgTab.classList.remove('active');
+                  const usersContent = document.getElementById('usersContent');
+                  usersContent.style.display = 'block';
+                  usersContent.innerHTML = originalUsersContent; // Restore the original content
+                  document.getElementById('contentFrame').style.display = 'none';
+                  fetchUsers();
+                  
+            } else {
+                userTab.classList.remove('active');
+                orgTab.classList.add('active');
+                document.getElementById('usersContent').style.display = 'none';
+                document.getElementById('contentFrame').src = page;
+                document.getElementById('contentFrame').style.display = 'block';
+            }
+        }
+        
+          
+        
+    </script>
+    <script>
+        function selectUser(userName) {
+//         	alert ("userName is :" +userName);
+//             window.parent.postMessage({ selectedUser: userName }, "*");
+//             window.parent.document.getElementById("userPopup").style.display = "none";
+
+// ✅ Check if userPopup exists in the parent window before accessing it
+//  userPopup  fixing issue with condition check 
+            const userPopup = window.parent.document.getElementById("userPopup");
+            if (userPopup) {
+                window.parent.postMessage({ selectedUser: userName }, "*");
+                userPopup.style.display = "none";
+            } else {
+                console.log(`User ${userName} selected, but no userPopup found in parent window.`);
+                // Optionally, you can handle the selection differently here
+            }
+
+        }
+    </script>
+    <script>
+    
+    // ✅ New function to load adduser.html
+    function loadAddUserPage() {
+        fetch('http://localhost:8085/adduser.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load adduser.html');
+                }
+                return response.text();
+            })
+            .then(html => {
+                const usersContent = document.getElementById('usersContent');
+                usersContent.innerHTML = html; // Replace content with addusers.html
+                document.getElementById('userTable').style.display = 'none'; // Hide table
+                document.getElementById('pagination').style.display = 'none'; // Hide pagination
+            })
+            .catch(error => {
+                console.error('Error loading adduser.html:', error);
+                alert('Failed to load the add user page. Please try again.');
+            });
+    }
+    
+    
+        function openUserPopup() {
+            document.getElementById("userPopup").style.display = "flex";
+        }
+
+        function closeUserPopup() {
+            document.getElementById("userPopup").style.display = "none";
+        }
+
+        // Listen for messages from users.html
+        window.addEventListener("message", function(event) {
+            if (event.data.selectedUser) {
+                document.getElementById("reportingToInput").value = event.data.selectedUser;
+                closeUserPopup(); // Close popup after selection
+            }
+        }, false);
+    </script>
+</body>
+</html>
