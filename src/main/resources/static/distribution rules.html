@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Rules Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #063970;
+            color: white;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .navigation {
+            display: flex;
+            padding: 0 20px;
+        }
+        .nav-item {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            border-bottom: 4px solid #4CAF50;
+        }
+        .container {
+            padding: 0 20px;
+        }
+        .page-title {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .page-description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .action-link {
+            color: #4CAF50;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .order-controls {
+            display: flex;
+            gap: 10px;
+        }
+        .user-pill {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .form-actions button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .btn-cancel {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+        }
+        .user-select {
+            margin-bottom: 10px;
+        }
+        .selected-users {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="navigation">
+            <div class="nav-item">Field Customization</div>
+            <div class="nav-item">User Mobile Settings</div>
+            <div class="nav-item active">Distribution Rules</div>
+            <div class="nav-item">Sender Email Address</div>
+            <div class="nav-item">Import Log</div>
+            <div class="nav-item">Audit Log</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="page-title">DISTRIBUTION RULES</h2>
+        <p class="page-description">Create distribution rules for allocating users to records (Leads) using a round-robin approach based on their properties.</p>
+        
+        <button class="btn" onclick="openAddModal()">Create Rule</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>S.NO</th>
+                    <th>RULES</th>
+                    <th>USERS</th>
+                    <th>EDIT</th>
+                    <th>DELETE</th>
+                    <th>ORDER</th>
+                </tr>
+            </thead>
+            <tbody id="rules-table-body">
+                <tr>
+                    <td>1</td>
+                    <td>Contact Name <span style="color: green">IS</span></td>
+                    <td>
+                        <span class="user-pill">Mounika E</span>
+                        <span class="user-pill">Hema</span>
+                        <span class="user-pill">Divya</span>
+                    </td>
+                    <td><a class="action-link" onclick="openEditModal(1)">Edit</a></td>
+                    <td><a class="action-link" onclick="deleteRule(1)">Delete</a></td>
+                    <td class="order-controls">
+                        <button class="action-btn">⬆️</button>
+                        <button class="action-btn">⬇️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Rule Modal -->
+    <div id="addRuleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h3>Create Distribution Rule</h3>
+            <form id="addRuleForm">
+                <div class="form-group">
+                    <label for="fieldName">Field Name:</label>
+                    <select id="fieldName" name="fieldName">
+                        <option value="contactName">Contact Name</option>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone Number</option>
+                        <option value="company">Company</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="operator">Operator:</label>
+                    <select id="operator" name="operator">
+                        <option value="is">IS</option>
+                        <option value="isNot">IS NOT</option>
+                        <option value="contains">CONTAINS</option>
+                        <option value="doesNotContain">DOES NOT CONTAIN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="value">Value:</label>
+                    <input type="text" id="value" name="value">
+                </div>
+                <div class="form-group">
+                    <label>Assign Users:</label>
+                    <div class="user-select">
+                        <select id="userSelect">
+                            <option value="">Select User</option>
+                            <option value="Mounika E">Mounika E</option>
+                            <option value="Hema">Hema</option>
+                            <option value="Divya">Divya</option>
+                            <option value="Raj">Raj</option>
+                            <option value="Suresh">Suresh</option>
+                        </select>
+                        <button type="button" onclick="addUser()">Add User</button>
+                    </div>
+                    <div id="selectedUsers" class="selected-users"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+                    <button type="button" class="btn-save" onclick="saveRule()">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Rule Modal -->
+    <div id="editRuleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h3>Edit Distribution Rule</h3>
+            <form id="editRuleForm">
+                <input type="hidden" id="editRuleId">
+                <div class="form-group">
+                    <label for="editFieldName">Field Name:</label>
+                    <select id="editFieldName" name="editFieldName">
+                        <option value="contactName">Contact Name</option>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone Number</option>
+                        <option value="company">Company</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editOperator">Operator:</label>
+                    <select id="editOperator" name="editOperator">
+                        <option value="is">IS</option>
+                        <option value="isNot">IS NOT</option>
+                        <option value="contains">CONTAINS</option>
+                        <option value="doesNotContain">DOES NOT CONTAIN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editValue">Value:</label>
+                    <input type="text" id="editValue" name="editValue">
+                </div>
+                <div class="form-group">
+                    <label>Assign Users:</label>
+                    <div class="user-select">
+                        <select id="editUserSelect">
+                            <option value="">Select User</option>
+                            <option value="Mounika E">Mounika E</option>
+                            <option value="Hema">Hema</option>
+                            <option value="Divya">Divya</option>
+                            <option value="Raj">Raj</option>
+                            <option value="Suresh">Suresh</option>
+                        </select>
+                        <button type="button" onclick="addEditUser()">Add User</button>
+                    </div>
+                    <div id="editSelectedUsers" class="selected-users"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                    <button type="button" class="btn-save" onclick="updateRule()">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Store rules in memory (in a real app, this would use a database)
+        let rules = [
+            {
+                id: 1,
+                fieldName: 'contactName',
+                operator: 'is',
+                value: '',
+                users: ['Mounika E', 'Hema', 'Divya']
+            }
+        ];
+        let nextId = 2;
+        
+        // Modal functions
+        function openAddModal() {
+            document.getElementById('addRuleModal').style.display = 'block';
+            document.getElementById('selectedUsers').innerHTML = '';
+        }
+        
+        function closeAddModal() {
+            document.getElementById('addRuleModal').style.display = 'none';
+            document.getElementById('addRuleForm').reset();
+        }
+        
+        function openEditModal(id) {
+            const rule = rules.find(r => r.id === id);
+            if (rule) {
+                document.getElementById('editRuleId').value = rule.id;
+                document.getElementById('editFieldName').value = rule.fieldName;
+                document.getElementById('editOperator').value = rule.operator;
+                document.getElementById('editValue').value = rule.value;
+                
+                // Populate selected users
+                const usersContainer = document.getElementById('editSelectedUsers');
+                usersContainer.innerHTML = '';
+                rule.users.forEach(user => {
+                    addUserToContainer(user, usersContainer, 'editSelectedUsersList');
+                });
+                
+                document.getElementById('editRuleModal').style.display = 'block';
+            }
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editRuleModal').style.display = 'none';
+            document.getElementById('editRuleForm').reset();
+        }
+        
+        // User selection functions
+        function addUser() {
+            const userSelect = document.getElementById('userSelect');
+            const selectedUser = userSelect.value;
+            
+            if (selectedUser) {
+                addUserToContainer(selectedUser, document.getElementById('selectedUsers'), 'selectedUsersList');
+                userSelect.value = '';
+            }
+        }
+        
+        function addEditUser() {
+            const userSelect = document.getElementById('editUserSelect');
+            const selectedUser = userSelect.value;
+            
+            if (selectedUser) {
+                addUserToContainer(selectedUser, document.getElementById('editSelectedUsers'), 'editSelectedUsersList');
+                userSelect.value = '';
+            }
+        }
+        
+        function addUserToContainer(user, container, listId) {
+            // Check if user already exists
+            const existingUsers = container.querySelectorAll('.user-pill');
+            for (let i = 0; i < existingUsers.length; i++) {
+                if (existingUsers[i].textContent.includes(user)) {
+                    return; // User already added
+                }
+            }
+            
+            const userPill = document.createElement('div');
+            userPill.className = 'user-pill';
+            userPill.innerHTML = user + ' <span onclick="removeUser(this)" style="cursor:pointer;color:red;">✖</span>';
+            container.appendChild(userPill);
+        }
+        
+        function removeUser(element) {
+            element.parentElement.remove();
+        }
+        
+        // CRUD operations
+        function saveRule() {
+            const fieldName = document.getElementById('fieldName').value;
+            const operator = document.getElementById('operator').value;
+            const value = document.getElementById('value').value;
+            
+            // Get selected users
+            const selectedUsers = [];
+            const userPills = document.getElementById('selectedUsers').querySelectorAll('.user-pill');
+            userPills.forEach(pill => {
+                selectedUsers.push(pill.textContent.replace('✖', '').trim());
+            });
+            
+            if (fieldName && operator && selectedUsers.length > 0) {
+                const newRule = {
+                    id: nextId++,
+                    fieldName,
+                    operator,
+                    value,
+                    users: selectedUsers
+                };
+                
+                rules.push(newRule);
+                renderRules();
+                closeAddModal();
+            } else {
+                alert('Please fill all required fields and select at least one user.');
+            }
+        }
+        
+        function updateRule() {
+            const id = parseInt(document.getElementById('editRuleId').value);
+            const fieldName = document.getElementById('editFieldName').value;
+            const operator = document.getElementById('editOperator').value;
+            const value = document.getElementById('editValue').value;
+            
+            // Get selected users
+            const selectedUsers = [];
+            const userPills = document.getElementById('editSelectedUsers').querySelectorAll('.user-pill');
+            userPills.forEach(pill => {
+                selectedUsers.push(pill.textContent.replace('✖', '').trim());
+            });
+            
+            if (fieldName && operator && selectedUsers.length > 0) {
+                const ruleIndex = rules.findIndex(r => r.id === id);
+                if (ruleIndex !== -1) {
+                    rules[ruleIndex] = {
+                        id,
+                        fieldName,
+                        operator,
+                        value,
+                        users: selectedUsers
+                    };
+                    
+                    renderRules();
+                    closeEditModal();
+                }
+            } else {
+                alert('Please fill all required fields and select at least one user.');
+            }
+        }
+        
+        function deleteRule(id) {
+            if (confirm('Are you sure you want to delete this rule?')) {
+                rules = rules.filter(r => r.id !== id);
+                renderRules();
+            }
+        }
+        
+        // Render rules table
+        function renderRules() {
+            const tableBody = document.getElementById('rules-table-body');
+            tableBody.innerHTML = '';
+            
+            rules.forEach((rule, index) => {
+                const row = document.createElement('tr');
+                
+                // Field mapping
+                const fieldNameMap = {
+                    'contactName': 'Contact Name',
+                    'email': 'Email',
+                    'phone': 'Phone Number',
+                    'company': 'Company'
+                };
+                
+                const operatorMap = {
+                    'is': 'IS',
+                    'isNot': 'IS NOT',
+                    'contains': 'CONTAINS',
+                    'doesNotContain': 'DOES NOT CONTAIN'
+                };
+                
+                // Format rule text
+                let ruleText = `${fieldNameMap[rule.fieldName]} <span style="color: green">${operatorMap[rule.operator]}</span>`;
+                if (rule.value) {
+                    ruleText += ` ${rule.value}`;
+                }
+                
+                // Create user pills
+                const userPills = rule.users.map(user => 
+                    `<span class="user-pill">${user}</span>`
+                ).join('');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruleText}</td>
+                    <td>${userPills}</td>
+                    <td><a class="action-link" onclick="openEditModal(${rule.id})">Edit</a></td>
+                    <td><a class="action-link" onclick="deleteRule(${rule.id})">Delete</a></td>
+                    <td class="order-controls">
+                        <button class="action-btn" onclick="moveRuleUp(${rule.id})">⬆️</button>
+                        <button class="action-btn" onclick="moveRuleDown(${rule.id})">⬇️</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Reordering functions
+        function moveRuleUp(id) {
+            const index = rules.findIndex(r => r.id === id);
+            if (index > 0) {
+                [rules[index], rules[index - 1]] = [rules[index - 1], rules[index]];
+                renderRules();
+            }
+        }
+        
+        function moveRuleDown(id) {
+            const index = rules.findIndex(r => r.id === id);
+            if (index < rules.length - 1) {
+                [rules[index], rules[index + 1]] = [rules[index + 1], rules[index]];
+                renderRules();
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderRules);
+    </script>
+</body>
+</html>

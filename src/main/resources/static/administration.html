@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Customization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: #07b53b;
+            border-bottom: 3px solid #07b53b;
+        }
+        
+        /* Form control area */
+        .form-controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        label {
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        select, button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        button {
+            background-color: #fff;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        
+        button.primary {
+            background-color: #2e8ae6;
+            color: #fff;
+            border-color: #2e8ae6;
+        }
+        
+        /* Field sections */
+        .section {
+            background-color: #f0f0f0;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .section-header {
+            padding: 10px 15px;
+            background-color: #e0e0e0;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .section-controls {
+            display: flex;
+        }
+        
+        .section-control {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #555;
+        }
+        
+        .show-default {
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Field items */
+        .field-items {
+            padding: 5px 15px;
+        }
+        
+        .field-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .field-item:last-child {
+            border-bottom: none;
+        }
+        
+        .field-name {
+            display: flex;
+            align-items: center;
+        }
+        
+        .field-name input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .field-name span {
+            color: #333;
+        }
+        
+        .color-highlight {
+            color: #07b53b;
+        }
+        
+        .field-controls {
+            display: flex;
+        }
+        
+        .field-control {
+            margin-left: 20px;
+            color: #2e8ae6;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .field-control:hover {
+            text-decoration: underline;
+        }
+        
+        /* Icons */
+        .icon {
+            font-size: 14px;
+            margin: 0 5px;
+        }
+        
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation tabs -->
+        <div class="tabs">
+            <div class="tab active">Field Customization</div>
+            <div class="tab">User Mobile Settings</div>
+            <div class="tab">Distribution Rules</div>
+            <div class="tab">Sender Email Address</div>
+            <div class="tab">Import Log</div>
+            <div class="tab">Audit Log</div>
+        </div>
+        
+        <div class="submenu-item" onclick="loadPage('users.html')">
+        <i class="fas fa-user"></i> Field Customization
+    </div>
+    <div class="submenu-item" onclick="loadPage('administration.html')">
+        <i class="fas fa-cogs"></i> User Mobile Settings
+    </div>
+    <div class="submenu-item" onclick="loadPage('notifications.html')">
+        <i class="fas fa-bell"></i> Sender Email Address
+    </div>
+    <div class="submenu-item" onclick="loadPage('integration.html')">
+        <i class="fas fa-plug"></i> Import Log
+    </div>
+    <div class="submenu-item" onclick="loadPage('custom_forms.html')">
+        <i class="fas fa-edit"></i> Audit Log
+    </div>
+        
+        
+        <!-- Form controls -->
+        <div class="form-controls">
+            <div class="form-group">
+                <label for="form-select">Choose a form</label>
+                <select id="form-select">
+                    <option value="leads">Leads</option>
+                    <option value="contacts">Contacts</option>
+                    <option value="accounts">Accounts</option>
+                </select>
+            </div>
+            <button id="add-field-btn">Add Field</button>
+            <button id="save-changes-btn" class="primary">Save Changes</button>
+        </div>
+        
+        <!-- Lead Info Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="leads-layout">
+                    <label for="leads-layout">Leads Page Layout</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">🔄</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lead Info Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="lead-info">
+                    <label for="lead-info">Lead Info</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="lead-info-default" checked>
+                        <label for="lead-info-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="contact-name">
+                        <label for="contact-name">Contact Name</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="nick-name">
+                        <label for="nick-name">Nick Name</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="mobile-number">
+                        <label for="mobile-number">Mobile Number</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="alternate-number">
+                        <label for="alternate-number">Alternate Number</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="email-address">
+                        <label for="email-address">Email Address</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="expected-revenue">
+                        <label for="expected-revenue">Expected Revenue</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="expected-closing-date">
+                        <label for="expected-closing-date">Expected Closing Date</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="lead-owner">
+                        <label for="lead-owner">Lead Owner</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="lead-stage">
+                        <label for="lead-stage">Lead Stage</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="assigned-manager">
+                        <label for="assigned-manager">Assigned Manager</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="testing">
+                        <label for="testing">Testing</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Unhide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="category">
+                        <label for="category">Category</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calls Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="calls">
+                    <label for="calls">Calls</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="calls-default" checked>
+                        <label for="calls-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="call-history">
+                        <label for="call-history">Call History</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Unhide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activities Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="activities">
+                    <label for="activities">Activities</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="activities-default" checked>
+                        <label for="activities-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="tasks">
+                        <label for="tasks">Tasks</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Unhide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notes Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="notes">
+                    <label for="notes">Notes</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="notes-default" checked>
+                        <label for="notes-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="notes-field">
+                        <label for="notes-field">Notes</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Unhide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="history">
+                    <label for="history">History</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="history-default" checked>
+                        <label for="history-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="leads-history">
+                        <label for="leads-history">Leads History</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Unhide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Empty Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="empty">
+                    <label for="empty">.</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="empty-default" checked>
+                        <label for="empty-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Source Info Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="source-info">
+                    <label for="source-info">Source Info</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="source-info-default" checked>
+                        <label for="source-info-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="lead-source">
+                        <label for="lead-source">Lead Source</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="campaign-name">
+                        <label for="campaign-name">Campaign Name</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="campaign-term">
+                        <label for="campaign-term">Campaign Term</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="campaign-content">
+                        <label for="campaign-content">Campaign Content</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="lead-date">
+                        <label for="lead-date">Lead Date</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="created-by">
+                        <label for="created-by">Created By</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Last Call Info Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <input type="checkbox" id="last-call-info">
+                    <label for="last-call-info">Last Call Info</label>
+                </div>
+                <div class="section-controls">
+                    <span class="section-control icon">✏️</span>
+                    <span class="section-control icon">⬆️</span>
+                    <span class="section-control icon">⬇️</span>
+                    <div class="show-default">
+                        <input type="checkbox" id="last-call-info-default" checked>
+                        <label for="last-call-info-default">Show Default</label>
+                    </div>
+                </div>
+            </div>
+            <div class="field-items">
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="caller-name">
+                        <label for="caller-name">Caller Name</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="last-call-time">
+                        <label for="last-call-time">Last Call Time</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="call-duration">
+                        <label for="call-duration">Call Duration</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="last-call-status">
+                        <label for="last-call-status">Last Call Status</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="reason-not-connected">
+                        <label for="reason-not-connected">Reason for Not Connected</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="is-call-missed">
+                        <label for="is-call-missed">Is Call Missed?</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+                <div class="field-item">
+                    <div class="field-name">
+                        <input type="checkbox" id="contact-reference">
+                        <label for="contact-reference">Contact Reference</label>
+                    </div>
+                    <div class="field-controls">
+                        <a href="#" class="field-control">Edit</a>
+                        <a href="#" class="field-control">Hide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add basic interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Toggle sections
+            const sectionCheckboxes = document.querySelectorAll('.section-title input[type="checkbox"]');
+            sectionCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const section = this.closest('.section');
+                    const fieldItems = section.querySelector('.field-items');
+                    if (fieldItems) {
+                        fieldItems.style.display = this.checked ? 'block' : 'none';
+                    }
+                });
+            });
+            
+            // Add Field button
+            document.getElementById('add-field-btn').addEventListener('click', function() {
+                alert('Add Field functionality would open a dialog to add new fields');
+            });
+            
+            // Save Changes button
+            document.getElementById('save-changes-btn').addEventListener('click', function() {
+                alert('Changes saved successfully!');
+            });
+            
+            // Edit and Hide links
+            const fieldControls = document.querySelectorAll('.field-control');
+            fieldControls.forEach(control => {
+                control.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = this.textContent;
+                    const fieldName = this.closest('.field-item').querySelector('label').textContent;
+                    alert(`${action} action for ${fieldName}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

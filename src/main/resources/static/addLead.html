@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR CRM - Lead Form</title>
+<style>
+/* ✅ Popup Background */
+.popup-container {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+/* ✅ Popup Box */
+.popup-content {
+	background: white;
+	width: 400px;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Popup Header */
+.popup-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	background-color: #28a745;
+}
+
+.popup-header h3 {
+	font-size: 16px;
+	color: white;
+}
+
+.close-btn {
+	background: none;
+	border: none;
+	font-size: 18px;
+	cursor: pointer;
+	color: #e74c3c;
+}
+
+/* ✅ Search Bar */
+.popup-body input {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+/* ✅ List of Related Items */
+.popup-list {
+	max-height: 250px;
+	overflow-y: auto;
+	border: 1px solid #ddd;
+	padding: 5px;
+	border-radius: 5px;
+	background: white;
+}
+
+.popup-list div {
+	padding: 8px;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+
+.popup-list div:hover {
+	background: #2ecc71;
+	color: white;
+}
+
+/* ✅ Popup Overlay */
+.popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: none;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+/* ✅ Popup Content */
+.popup-content {
+	background: white;
+	width: 75%;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	overflow: hidden;
+}
+
+/* ✅ Popup Header */
+.popup-header {
+	background: #2a9d8f;
+	color: white;
+	padding: 12px 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.popup-header h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.close-popup {
+	cursor: pointer;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+/* ✅ Popup Body */
+.popup-body {
+	padding: 15px;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+/* ✅ Table Styling */
+.popup-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.popup-table th, .popup-table td {
+	padding: 10px;
+	border-bottom: 1px solid #ddd;
+	text-align: left;
+}
+
+.popup-table th {
+	background: #f4f4f4;
+	font-size: 14px;
+}
+
+/* ✅ Hover Effect */
+.popup-table tbody tr:hover {
+	background: #e0f7fa;
+	cursor: pointer;
+}
+/* Your existing styles here */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Poppins', sans-serif;
+}
+
+body {
+	background: #f4f7f6;
+	padding: 20px;
+}
+
+.container {
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+	color: #28a745;
+	margin-bottom: 20px;
+}
+
+.form-section {
+	margin-bottom: 20px;
+	padding: 15px;
+	background: #f9f9f9;
+	border-radius: 5px;
+}
+
+.form-row {
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+}
+
+.form-group {
+	flex: 1;
+	position: relative;
+	/* Required for positioning the icon */
+}
+
+label {
+	font-weight: normal;
+	display: block;
+	margin: 10px 0 5px;
+}
+
+input, select, textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	font-size: 16px;
+}
+
+.btn-group {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+
+button {
+	background: #28a745;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	margin-left: 10px;
+}
+
+button.cancel {
+	background: #dc3545;
+}
+
+button.update {
+	background: #ffc107;
+	color: #212529;
+}
+
+button:hover {
+	opacity: 0.8;
+}
+
+.popup {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	justify-content: center;
+	align-items: center;
+}
+
+.popup-content {
+	background: white;
+	width: 80%;
+	height: 80%;
+	border-radius: 10px;
+	position: relative;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	font-size: 24px;
+	cursor: pointer;
+}
+
+iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.user-list li:hover {
+	background-color: #f0f0f0;
+}
+
+.time-input-container {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.time-input {
+	width: auto;
+	padding: 6px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	font-size: 13px;
+}
+
+/* Add any other styling as needed */
+</style>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+	integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+	<div class="container">
+		<h2 id="formTitle">Add New Lead</h2>
+		<form id="addLeadForm">
+			<input type="hidden" id="leadId" name="leadId">
+			<div class="form-section">
+				<h3>Lead Info</h3>
+				<div class="form-row"
+					style="display: flex; gap: 20px; align-items: center;">
+					<div class="form-group" style="flex: 1;">
+						<label>Contact Name *</label> <input type="text" id="contactName"
+							name="contactName" required style="width: 100%;">
+					</div>
+					<div class="form-group" style="flex: 1; position: relative;">
+						<label>Mobile Number *</label> <input inputmode="numeric"
+							pattern="\d*" id="mobileNumber" name="mobile_number" required
+							style="width: 100%; padding-right: 30px;"> <i
+							class="fas fa-plus-circle" onclick="toggleAlternateNumber()"
+							style="position: absolute; right: 10px; top: 35px; cursor: pointer; font-size: 18px; color: #007bff;"></i>
+					</div>
+				</div>
+				<div class="form-row" id="alrernateNumberMain-div"
+					style="display: none;">
+					<div class="form-group">
+						<label>Alternate Number *</label> <input inputmode="numeric"
+							pattern="\d*" style="width: 350px;" id="AlterNateNumber"
+							name="alternateNumber">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Email Address</label> <input type="email" id="emailAddress"
+							name="emailAddress">
+					</div>
+					<div class="form-group">
+						<label>Expected Revenue</label> <input type="number"
+							id="expectedRevenue" name="expectedRevenue">
+					</div>
+				</div>
+				<div class="form-row">
+					<!-- Replace the leadOwner select with an input and an icon -->
+					<div class="form-group">
+						<label>Lead Owner *</label>
+						<div
+							style="display: flex; flex-direction: row; align-items: center; align-content: center;">
+							<input type="text" id="leadOwnerName" name="leadOwnerName"
+								required readonly style="width: 300px"
+								placeholder="Select from dropdown"> <i
+								style="padding-left: 15px;" class="fas fa-user lead-owner-icon"
+								onclick="openUserPopup()" id="editUserPopUp"></i>
+						</div>
+						<input type="hidden" id="leadOwnerEmail" name="leadOwnerEmail">
+					</div>
+					<div class="form-group">
+						<label>Lead Stage</label> <select id="leadStage" name="leadStage">
+							<option value="NEW">NEW</option>
+							<option value="CONTACTED">CONTACTED</option>
+							<option value="INTERESTED">INTERESTED</option>
+							<option value="FOLLOW-UP">FOLLOW-UP</option>
+							<option value="DEAL CLOSED">DEAL CLOSED</option>
+							<option value="CANCEL LEAD">CANCEL LEAD</option>
+							<option value="NOT INTERESTED">NOT INTERESTED</option>
+							<option value="Site Visit">Site Visit</option>
+						</select>
+
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Category</label> <select id="category" name="category">
+							<option value="software data">software data</option>
+							<option value="insurance data">insurance data</option>
+							<option value="salaried professionals">salaried
+								professionals</option>
+							<option value="Business owners/entrepreneurs">Business
+								owners/entrepreneurs</option>
+							<option value="Government Employees">Government
+								Employees</option>
+							<option value="Students">Students</option>
+							<option value="IT Professionals">IT Professionals</option>
+							<option value="Farmers/landowners">Farmers/landowners</option>
+							<option value="Freelancers">Freelancers</option>
+							<option value="Others">Others</option>
+							<option value="OLD DATA">OLD DATA</option>
+							<option value="Marketing Data">Marketing Data</option>
+							<option value="whatsapp data">whatsapp data</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Assigned Manager</label> <input type="text"
+							id="assignedManager" name="assignedManager">
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="form-section">
+				<h3>Next Follow-up Info</h3>
+				<div class="form-row">
+					<!-- <div class="form-group">
+                        <label>Next Follow-up On</label> <input type="date"
+                            id="nextFollowUpOn" name="nextFollowUpOn">
+                    </div> -->
+					<div class="form-group">
+						<label>Next Follow-up On</label> <input type="date"
+							class="input-field" placeholder="dd-MMM-yyyy"
+							style="margin-bottom: 5px;" id="nextFollowUpOn"
+							name="nextFollowUpOn">
+						<div class="time-input-container">
+							<select class="time-input">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+							</select> <span>:</span> <select class="time-input">
+								<option value="00">00</option>
+								<option value="05">05</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="35">35</option>
+								<option value="40">40</option>
+								<option value="45">45</option>
+								<option value="50">50</option>
+								<option value="55">55</option>
+							</select> <select class="time-input">
+								<option value="AM">AM</option>
+								<option value="PM">PM</option>
+							</select>
+						</div>
+						<small class="timezone-label">(GMT +05:30)-Asia/Kolkata</small>
+					</div>
+					<div class="form-group">
+						<label>Next Follow-up Notes</label>
+						<textarea id="nextFollowUpNotes" name="nextFollowUpNotes" rows="3"></textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-section">
+				<div class="form-row">
+					<div class="form-group">
+						<label>Description</label> <input type="text" id="description"
+							name="description">
+					</div>
+
+				</div>
+			</div>
+
+			<div class="form-section">
+				<h3>Source Info</h3>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Lead Source</label> <select id="leadSource"
+							name="leadSource"></select>
+					</div>
+					<div class="form-group">
+						<label>Campaign Term</label> <input type="text" id="campaignTerm"
+							name="compaignTeam">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Lead Date</label> <input type="text" id="leadDate"
+							name="leadDate" readonly>
+					</div>
+					<div class="form-group">
+						<label>Campaign Name</label> <input type="text" id="campaignName"
+							name="compaignName">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Campaign Content</label> <input type="text"
+							id="campaignContent" name="compaignContent">
+					</div>
+					<div class="form-group">
+						<label>Created By</label> <input type="text" id="createdBy"
+							name="createdBy" readonly>
+					</div>
+				</div>
+			</div>
+
+			<div class="btn-group">
+				<button type="submit" id="saveAndNew">Save & New</button>
+				<button type="submit" id="save">Save</button>
+				<button type="submit" id="update" class="update"
+					style="display: none;">Update</button>
+				<!-- <button type="reset" id="cancel" class="cancel">Cancel</button> -->
+				<button type="button" id="cancel" onclick="cancelForm()">Cancel</button>
+			</div>
+		</form>
+	</div>
+
+
+	<!-- ✅ Related To USERPopup -->
+	<div id="userPopup" class="popup-overlay" style="display: none;">
+		<div class="popup-content">
+			<div class="popup-header">
+				<h3>Select a User</h3>
+				<span class="close-popup" onclick="closeUserPopup()">×</span>
+			</div>
+			<div class="popup-body">
+				<table class="popup-table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Mobile</th>
+							<th>Profile</th>
+							<th>Reporting To</th>
+						</tr>
+					</thead>
+					<tbody id="userList">
+						<!-- Leads from API will be inserted here -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<script>
+    // Check if we're in update mode by looking for lead data in URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const leadDataParam = urlParams.get('leadData');
+
+    // If leadData exists, we're in update mode
+    if (leadDataParam) {
+        const leadData = JSON.parse(decodeURIComponent(leadDataParam));
+        
+        // Proper ways to log the object:
+        console.log("in addform - leadData:", leadData);
+        console.log("in addform - JSON:", JSON.stringify(leadData, null, 2));
+        console.dir(leadData);
+        
+        populateFormForUpdate(leadData);
+    }
+    
+    // Function to populate form with lead data for update
+    function populateFormForUpdate(leadData) {
+        document.getElementById('formTitle').textContent = 'Update Lead';
+        document.getElementById('leadId').value = leadData.leadId;
+        
+        // Show update button and hide save buttons
+        document.getElementById('update').style.display = 'inline-block';
+        document.getElementById('save').style.display = 'none';
+        document.getElementById('saveAndNew').style.display = 'none';
+        
+        // Populate form fields
+        document.getElementById('contactName').value = leadData.contactName || '';
+        document.getElementById('mobileNumber').value = leadData.mobileNumber || '';
+        
+        // Handle alternate number
+        if (leadData.alternateNumber) {
+            document.getElementById('AlterNateNumber').value = leadData.alternateNumber || leadData.alternateNumber;
+            document.getElementById('alrernateNumberMain-div').style.display = 'block';
+        }
+        
+        document.getElementById('emailAddress').value = leadData.emailAddress || '';
+        document.getElementById('expectedRevenue').value = leadData.expectedRevenue || '';
+        
+        
+        document.getElementById('category').value = leadData.category || '';
+        document.getElementById('assignedManager').value = leadData.assignedManager || '';
+        
+        
+        
+        // Handle leadStage with case-insensitive matching
+        const leadStageSelect = document.getElementById('leadStage');
+        if (leadData.leadStage) {
+            const leadStageLower = leadData.leadStage.toLowerCase();
+            for (let i = 0; i < leadStageSelect.options.length; i++) {
+                if (leadStageSelect.options[i].value.toLowerCase() === leadStageLower) {
+                    leadStageSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        document.getElementById('nextFollowUpNotes').value = leadData.nextFollowUpNotes || '';
+        document.getElementById('description').value = leadData.description || '';
+        
+        // Format dates for date inputs
+        if (leadData.nextFollowUpOn) {
+            const followUpDate = new Date(leadData.nextFollowUpOn);
+            document.getElementById('nextFollowUpOn').value = formatDate(followUpDate);
+        }
+        
+        // Only set leadDate if it exists in the lead data, otherwise leave it as today's date
+        if (leadData.leadDate) {
+            const leadDate = new Date(leadData.leadDate);
+            document.getElementById('leadDate').value = formatDate(leadDate);
+        }
+        
+        // Lead owner info
+        document.getElementById('leadOwnerName').value = leadData.leadOwner || '';
+        document.getElementById('leadOwnerEmail').value = leadData.leadOwnerEmail || '';
+        
+        // Source info with case-insensitive matching for leadSource
+        if (leadData.sourceInfo) {
+            const leadSourceSelect = document.getElementById('leadSource');
+            if (leadData.sourceInfo.leadSource) {
+                const leadSourceLower = leadData.sourceInfo.leadSource.toLowerCase();
+                for (let i = 0; i < leadSourceSelect.options.length; i++) {
+                    if (leadSourceSelect.options[i].value.toLowerCase() === leadSourceLower) {
+                        leadSourceSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+            document.getElementById('campaignTerm').value = leadData.sourceInfo.compaignTeam || '';
+            document.getElementById('campaignName').value = leadData.sourceInfo.compaignName || '';
+            document.getElementById('campaignContent').value = leadData.sourceInfo.compaignContent || '';
+        }
+        
+        // Created by
+        document.getElementById('createdBy').value = leadData.createdBy || '';
+    }
+    
+    //displaying alternate mobile 
+    function toggleAlternateNumber() {
+        let alternateDiv = document.getElementById("alrernateNumberMain-div");
+        let alternateInput = document.getElementById("AlterNateNumber");
+
+        // Toggle visibility
+        if (alternateDiv.style.display === "none" || alternateDiv.style.display === "") {
+            alternateDiv.style.display = "block";
+        } else {
+            alternateDiv.style.display = "none";
+            alternateInput.value = ""; // Clear input when hidden
+        }
+    }
+     
+    document.getElementById("AlterNateNumber").addEventListener("blur", function () {
+        if (this.value.trim() === "") {
+            this.value = ""; // Default value
+        }
+    });
+    
+    // Function to fetch data from backend
+    async function fetchData() {
+        try {
+            const response = await fetch('http://localhost:8085/api/leads');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            return null;
+        }
+    }
+
+    // Function to populate dropdowns
+    function populateDropdown(selectElement, values) {
+        selectElement.innerHTML = ''; // Clear existing options
+        values.forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.text = value;
+            selectElement.appendChild(option);
+        });
+    }
+
+    // Function to populate lead sources dropdown
+    function populateLeadSourceDropdown() {
+        const leadSourceSelect = document.getElementById("leadSource");
+        leadSourceSelect.innerHTML = ''; // Clear existing options
+
+        // Add default option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "--Select--";
+        leadSourceSelect.appendChild(defaultOption);
+
+        // Add lead source options
+        const leadSources = [
+            "Incoming Call",
+            "WhatsApp",
+            "Website",
+            "Facebook Ad",
+            "Google Ad",
+            "Indiamart",
+            "Tradeindia",
+            "Justdial",
+            "Sulekha",
+            "Paper Ad",
+            "Cold Calling",
+            "Reference",
+            "olx",
+            "old data",
+            "marketing",
+            "event"
+        ];
+
+        leadSources.forEach(source => {
+            const option = document.createElement("option");
+            option.value = source;
+            option.text = source;
+            leadSourceSelect.appendChild(option);
+        });
+    }
+
+    // Function to format date as YYYY-MM-DD
+    function formatDate(date) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Function to fetch logged-in username
+    async function fetchLoggedInUsername() {
+        try {
+            const response = await fetch('http://localhost:8085/api/getUsername');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const username = await response.text();
+            return username;
+        } catch (error) {
+            console.error('Error fetching username:', error);
+            return 'Unknown User';
+        }
+    }
+
+    // Function to reset the form and set the createdBy field
+    async function resetForm() {
+        const form = document.getElementById('addLeadForm');
+        form.reset();
+
+        // Set Lead Date to today's date only for new leads (not in update mode)
+        if (!leadDataParam) {
+            const today = new Date();
+            const leadDateInput = document.getElementById('leadDate');
+            if (leadDateInput) {
+                leadDateInput.value = formatDate(today);
+            }
+        }
+
+        // Set Created By to the current user's name
+        const createdByInput = document.getElementById('createdBy');
+        const username = await fetchLoggedInUsername();
+        createdByInput.value = username;
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Fetch data from backend
+        const leadsData = await fetchData();
+
+        // Populate lead sources
+        populateLeadSourceDropdown();
+
+        // Set Lead Date to today's date only if we're not in update mode
+        if (!leadDataParam) {
+            const today = new Date();
+            const leadDateInput = document.getElementById('leadDate');
+            if (leadDateInput) {
+                leadDateInput.value = formatDate(today);
+            }
+        }
+
+        // Set Created By to the current user's name
+        const createdByInput = document.getElementById('createdBy');
+        const username = await fetchLoggedInUsername();
+        console.log(username);
+        createdByInput.value = username;
+    });
+
+    document.getElementById('addLeadForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        
+        // Initialize leadData and sourceInfoData objects
+        const leadData = {};
+        const sourceInfoData = {};
+
+        // Store individual values from the form
+        leadData.contactName = document.getElementById('contactName').value;
+        leadData.mobileNumber = document.getElementById('mobileNumber').value;
+        leadData.alternateNumber = document.getElementById('AlterNateNumber').value || null;
+        leadData.emailAddress = document.getElementById('emailAddress').value;
+        leadData.expectedRevenue = parseFloat(document.getElementById('expectedRevenue').value) || null;
+        leadData.leadStage = document.getElementById('leadStage').value;
+        leadData.nextFollowUpNotes = document.getElementById('nextFollowUpNotes').value;
+        leadData.description = document.getElementById('description').value;
+        leadData.category = document.getElementById('category').value;
+        leadData.assignedManager = document.getElementById('assignedManager').value;
+        
+        // Format dates to YYYY-MM-DD
+        // Get date and time components
+const dateStr = document.getElementById('nextFollowUpOn').value;
+const hours = document.querySelector('.time-input-container select:nth-of-type(1)').value;
+const minutes = document.querySelector('.time-input-container select:nth-of-type(2)').value;
+const ampm = document.querySelector('.time-input-container select:nth-of-type(3)').value;
+
+// Convert to 24-hour format
+let hours24 = parseInt(hours, 10);
+if (ampm === 'PM' && hours24 < 12) hours24 += 12;
+if (ampm === 'AM' && hours24 === 12) hours24 = 0;
+
+// Format as ISO string with time
+leadData.nextFollowUpOn = `${dateStr}T${hours24.toString().padStart(2, '0')}:${minutes}:00`;
+
+        const leadDate = document.getElementById('leadDate').value;
+        leadData.leadDate = leadDate; 
+        
+        
+        // Store sourceInfo values individually
+        sourceInfoData.leadSource = document.getElementById('leadSource').value;
+        sourceInfoData.compaignTeam = document.getElementById('campaignTerm').value;
+        sourceInfoData.compaignName = document.getElementById('campaignName').value;
+        sourceInfoData.compaignContent = document.getElementById('campaignContent').value;
+        sourceInfoData.leadDate = leadDate;
+        sourceInfoData.createdBy = document.getElementById('createdBy').value; 
+        
+        leadData.leadOwner = document.getElementById('leadOwnerName').value;
+        leadData.leadOwnerEmail = document.getElementById('leadOwnerEmail').value;
+        
+        // Include lead ID if we're in update mode
+        const leadId = document.getElementById('leadId').value;
+        if (leadId) {
+            leadData.leadId = leadId;
+        }
+        
+        // If alternateNumber is empty, don't include it in the leadData
+        if (leadData.alternateNumber === "") {
+            delete leadData.alternateNumber;
+        }
+        
+        const structuredLeadData = {
+            ...leadData,
+            sourceInfo: sourceInfoData
+        };
+        
+       
+
+        console.log(structuredLeadData);
+
+        const submitButton = event.submitter;
+        if (submitButton.id === 'saveAndNew') {
+            saveAndNewLead(structuredLeadData);
+        } else if (submitButton.id === 'save') {
+            saveLead(structuredLeadData);
+        } else if (submitButton.id === 'update') {
+            updateLead(structuredLeadData);
+        } else if (submitButton.id === 'cancel') {
+            cancelForm();
+            
+        }
+    });
+
+    // Function to save and reset the form
+    async function saveAndNewLead(leadData) {
+        try {
+            const response = await fetch('http://localhost:8085/api/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(leadData),
+            });
+
+            if (response.ok) {
+                alert('Lead added successfully!');
+                await resetForm();
+            } else {
+                alert('Failed to add lead: ' + response.statusText);
+            }
+        } catch (error) {
+            console.error('Error adding lead:', error);
+            alert('Error adding lead. Please try again.');
+        }
+    }
+
+    function saveLead(leadData) {
+        try {
+            fetch('http://localhost:8085/api/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(leadData),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Lead added successfully!');
+                        window.location.href = 'leads.html';
+                    } else {
+                        alert('Failed to add lead: ' + response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding lead:', error);
+                    alert('Error adding lead. Please try again.');
+                });
+        } catch (error) {
+            console.error('Error adding lead:', error);
+            alert('Error adding lead. Please try again.');
+        }
+    }
+    
+    // Function to update an existing lead
+    function updateLead(leadData) {
+        console.log("before update : " + leadData)
+        try {
+            fetch('http://localhost:8085/api/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(leadData),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Lead updated successfully!');
+                        window.location.href = 'leads.html';
+                    } else {
+                        alert('Failed to update lead: ' + response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating lead:', error);
+                    alert('Error updating lead. Please try again.');
+                });
+        } catch (error) {
+            console.error('Error updating lead:', error);
+            alert('Error updating lead. Please try again.');
+        }
+    }
+
+    function cancelForm() {
+        const form = document.getElementById('addLeadForm');
+        if (form) {
+            form.reset();
+        }
+        window.location.href = 'leads.html';
+        // Go back to the previous page
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            // If no history, go to the leads page
+            window.location.href = 'leads.html';
+           
+        }
+       
+    }
+    
+    const EdituserPopUp=document.getElementById("editUserPopUp")
+    
+    // ✅ Open User Selection Popup
+    function openUserPopup() {
+        fetch("http://localhost:8085/api/getUsers")
+            .then(response => response.json())
+            .then(users => {
+                const userList = document.getElementById("userList");
+                userList.innerHTML = "";
+                users.forEach(user => {
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.mobile}</td>
+                    <td>${user.profile}</td>
+                    <td>${user.reportingTo}</td>
+                `;
+                row.addEventListener("click", function() {
+                    
+                    const selectedUser = user;
+                    
+                    if (selectedUser) {
+                        document.getElementById("leadOwnerName").value = selectedUser.username;
+                        document.getElementById('leadOwnerEmail').value = selectedUser.email;
+                        console.log(selectedUser.username)
+                        console.log(selectedUser.email)
+                        
+                        closeUserPopup(); // Close popup after selection
+                    }
+                    
+                    document.getElementById("userPopup").style.display = "none";
+                    });
+                    userList.appendChild(row);
+                });
+                document.getElementById("userPopup").style.display = "flex";
+            })
+            .catch(error => console.error("Error fetching users:", error));
+    }
+
+    // Attach event listeners to buttons
+    const openUserPopupBtn = document.getElementById("openUserPopup");
+    if (openUserPopupBtn) {
+        openUserPopupBtn.addEventListener("click", openUserPopup);
+    }
+
+    // Close popup function
+    function closeUserPopup() {
+        document.getElementById("userPopup").style.display = "none";
+    }
+
+    // Attach event listener for closing popup
+    const closeUserPopupBtn = document.querySelector(".close-popup");
+    if (closeUserPopupBtn) {
+        closeUserPopupBtn.addEventListener("click", closeUserPopup);
+    }
+
+    // Prevent redirect on refresh
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+</script>
+</body>
+</html>

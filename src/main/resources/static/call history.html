@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call History - Ananta Realty</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .container {
+            margin-top: 80px;
+            padding: 20px;
+            width: 100%;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #28a745;
+            color: white;
+        }
+        .call-type-outgoing {
+            color: green;
+            font-weight: bold;
+        }
+        .call-type-incoming {
+            color: blue;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h2>Call History</h2>
+    </div>
+    <div class="container">
+        <div class="pagination-container">
+            <div>
+                <label>Records per page:</label>
+                <input type="number" value="50" min="10" max="100">
+            </div>
+            <div>
+                <button>&laquo;</button>
+                <span>1 - 50 / 99906</span>
+                <button>&raquo;</button>
+                <button>🔄 Refresh</button>
+            </div>
+            <select>
+                <option>Recently Created</option>
+            </select>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Caller Name</th>
+                    <th>Start Time</th>
+                    <th>Contact Name</th>
+                    <th>Contact Phone No</th>
+                    <th>Call Type</th>
+                    <th>Call Duration</th>
+                    <th>Feedback</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mounika E</td>
+                    <td>20-Feb-2025 12:34 PM</td>
+                    <td>FBHSN3346</td>
+                    <td><a href="tel:996733448">996733448</a></td>
+                    <td class="call-type-outgoing">OUTGOING</td>
+                    <td>00:03:38</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Lavanya</td>
+                    <td>20-Feb-2025 12:37 PM</td>
+                    <td>R1697</td>
+                    <td><a href="tel:9441009885">9441009885</a></td>
+                    <td class="call-type-outgoing">OUTGOING</td>
+                    <td>00:00:28</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Manjula.S</td>
+                    <td>20-Feb-2025 12:36 PM</td>
+                    <td>Kala</td>
+                    <td><a href="tel:+919550948410">+919550948410</a></td>
+                    <td class="call-type-incoming">INCOMING</td>
+                    <td>00:00:43</td>
+                    <td>ANSWERED</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

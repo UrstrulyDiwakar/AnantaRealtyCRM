@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ananta Realty - Custom Forms</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .form-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #28a745;
+            cursor: pointer;
+        }
+        .form-card img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        /* Data section styles */
+        #data-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        /* Top action bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-button {
+            background: #6c757d;
+            color: white;
+        }
+        .search-button {
+            background: #17a2b8;
+            color: white;
+        }
+        .add-button {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        .filter-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .filter-bar-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .records-per-page select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .refresh-button {
+            padding: 5px 10px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pagination-buttons button {
+            padding: 5px 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pagination-buttons button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .page-info {
+            margin: 0 10px;
+        }
+        .filter-dropdown select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            min-width: 150px;
+        }
+        
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        .data-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+        
+        /* No data and loading */
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .filter-bar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .filter-bar-left, .filter-bar-center, .filter-bar-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Custom Forms</h2>
+        
+        <!-- Original form cards -->
+        <div class="form-container">
+            <div class="form-card" onclick="loadData('tasks')">
+                <img src="tasks_icon.png" alt="Tasks">
+                <h3>Tasks</h3>
+            </div>
+            <div class="form-card" onclick="loadData('contacts')">
+                <img src="contacts_icon.png" alt="Contacts">
+                <h3>Contacts</h3>
+            </div>
+            <div class="form-card">
+                <img src="inbound_mails_icon.png" alt="Inbound Mails">
+                <h3>Inbound Mails</h3>
+            </div>
+            <div class="form-card">
+                <img src="notes_icon.png" alt="Notes">
+                <h3>Notes</h3>
+            </div>
+            <div class="form-card">
+                <img src="outbound_mails_icon.png" alt="Outbound Mails">
+                <h3>Outbound Mails</h3>
+            </div>
+            <div class="form-card">
+                <img src="outbound_sms_icon.png" alt="Outbound SMS">
+                <h3>Outbound SMS</h3>
+            </div>
+            <div class="form-card">
+                <img src="userwise_usage_icon.png" alt="Userwise Usage Details">
+                <h3>Userwise Usage Details</h3>
+            </div>
+        </div>
+        
+        <!-- Data display section (initially hidden) -->
+        <div id="data-section">
+            <!-- Top action bar -->
+            <div class="action-bar">
+                <button class="back-button" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <div class="action-buttons">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Filter bar -->
+            <div class="filter-bar">
+                <div class="filter-bar-left">
+                    <div class="records-per-page">
+                        <span>Records per page:</span>
+                        <select id="records-per-page" onchange="changeRecordsPerPage()">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-bar-center">
+                    <button class="refresh-button" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="pagination-buttons">
+                        <button id="first-page" onclick="goToPage(1)" disabled>
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button id="prev-page" onclick="goToPreviousPage()" disabled>
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        <span class="page-info" id="page-info">Page 1 of 1</span>
+                        <button id="next-page" onclick="goToNextPage()" disabled>
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button id="last-page" onclick="goToPage(1)" disabled>
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-bar-right">
+                    <div class="filter-dropdown">
+                        <select id="data-filter" onchange="applyFilter()">
+                            <!-- Options will be added dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data table -->
+            <table class="data-table" id="data-table">
+                <thead id="table-header">
+                    <!-- Headers will be added dynamically -->
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data will be added dynamically -->
+                </tbody>
+            </table>
+            
+            <!-- No data message -->
+            <div class="no-data" id="no-data" style="display: none;">
+                No data available
+            </div>
+            
+            <!-- Loading indicator -->
+            <div class="loading" id="loading" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentViewType = '';
+        let currentPage = 1;
+        let recordsPerPage = 50;
+        let totalRecords = 0;
+        let totalPages = 1;
+        let allData = []; // Stores all data
+        let filteredData = []; // Stores filtered data
+        let selectedRecords = new Set(); // Stores IDs of selected records
+        
+        // Format date to DD-MM-YYYY 00:00:00
+        function formatDateTime(dateString) {
+            if (!dateString) return '';
+            
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            
+            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        // Load data when a card is clicked
+        function loadData(type) {
+            currentViewType = type;
+            currentPage = 1;
+            selectedRecords.clear();
+            
+            // Show data section and hide form cards
+            document.getElementById('data-section').style.display = 'block';
+            document.querySelector('.form-container').style.display = 'none';
+            document.querySelector('.container h2').textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            
+            // Initialize filter dropdown based on view type
+            initializeFilterDropdown();
+            
+            // Fetch data
+            fetchData();
+        }
+        
+        function initializeFilterDropdown() {
+            const filterDropdown = document.getElementById('data-filter');
+            filterDropdown.innerHTML = '';
+            
+            if (currentViewType === 'tasks') {
+                filterDropdown.innerHTML = `
+                    <option value="all">Public Views</option>
+                    <option value="open">My All Open</option>
+                    <option value="overdue">My All Overdue</option>
+                    <option value="today">My Due Today</option>
+                    <option value="tomorrow">My Due Tomorrow</option>
+                    <option value="next7days">My Due Next 7 Days</option>
+                `;
+            } else if (currentViewType === 'contacts') {
+                filterDropdown.innerHTML = `
+                    <option value="all">All Contacts</option>
+                    <option value="recently_created">Recently Created</option>
+                    <option value="recently_updated">Recently Updated</option>
+                `;
+            }
+        }
+        
+        // TODO: Replace this with actual API call in production
+        function fetchData() {
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'inline-block';
+            document.getElementById('no-data').style.display = 'none';
+            document.getElementById('table-body').innerHTML = '';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Get mock data based on view type
+                if (currentViewType === 'tasks') {
+                    allData = generateMockTasks();
+                } else if (currentViewType === 'contacts') {
+                    allData = generateMockContacts();
+                }
+                
+                // Apply initial filter
+                applyFilter();
+                
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+            }, 500); // Simulate network delay
+        }
+        
+        function applyFilter() {
+            const filterValue = document.getElementById('data-filter').value;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (currentViewType === 'tasks') {
+                filteredData = [...allData];
+                
+                if (filterValue === 'open') {
+                    filteredData = filteredData.filter(task => 
+                        task.status === 'PENDING' || task.status === 'IN_PROGRESS');
+                } else if (filterValue === 'overdue') {
+                    filteredData = filteredData.filter(task => {
+                        const dueDate = new Date(task.dueDate);
+                        return dueDate < today && task.status !== 'COMPLETED';
+                    });
+                } else if (filterValue === 'today') {
+                    filteredData = filteredData.filter(task => {
+                        const dueDate = new Date(task.dueDate);
+                        dueDate.setHours(0, 0, 0, 0);
+                        return dueDate.getTime() === today.getTime();
+                    });
+                } else if (filterValue === 'tomorrow') {
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    filteredData = filteredData.filter(task => {
+                        const dueDate = new Date(task.dueDate);
+                        dueDate.setHours(0, 0, 0, 0);
+                        return dueDate.getTime() === tomorrow.getTime();
+                    });
+                } else if (filterValue === 'next7days') {
+                    const nextWeek = new Date(today);
+                    nextWeek.setDate(nextWeek.getDate() + 7);
+                    
+                    filteredData = filteredData.filter(task => {
+                        const dueDate = new Date(task.dueDate);
+                        return dueDate >= today && dueDate <= nextWeek;
+                    });
+                }
+            } 
+            else if (currentViewType === 'contacts') {
+                filteredData = [...allData];
+                
+                if (filterValue === 'recently_created') {
+                    filteredData.sort((a, b) => new Date(b.createdDateTime) - new Date(a.createdDateTime));
+                } else if (filterValue === 'recently_updated') {
+                    filteredData.sort((a, b) => new Date(b.modifiedTimeDate) - new Date(a.modifiedTimeDate));
+                }
+            }
+            
+            totalRecords = filteredData.length;
+            totalPages = Math.ceil(totalRecords / recordsPerPage);
+            
+            // Update pagination controls
+            updatePaginationControls();
+            
+            // Render the table
+            renderTable();
+            
+            // Show no data message if applicable
+            document.getElementById('no-data').style.display = filteredData.length === 0 ? 'block' : 'none';
+        }
+        
+        function renderTable() {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+            
+            // Clear existing content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Set table headers based on view type
+            if (currentViewType === 'tasks') {
+                tableHeader.innerHTML = `
+                    <tr>
+                        <th class="checkbox-cell">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+                        </th>
+                        <th>Task Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                        <th>Assigned To</th>
+                    </tr>
+                `;
+            } else if (currentViewType === 'contacts') {
+                tableHeader.innerHTML = `
+                    <tr>
+                        <th class="checkbox-cell">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+                        </th>
+                        <th>Contact Name</th>
+                        <th>Mobile Number</th>
+                        <th>Email Address</th>
+                        <th>Contact Owner</th>
+                        <th>Company Name</th>
+                    </tr>
+                `;
+            }
+            
+            // Calculate pagination bounds
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+            
+            // Add table rows
+            for (let i = startIndex; i < endIndex; i++) {
+                const item = filteredData[i];
+                const isSelected = selectedRecords.has(item.id);
+                
+                if (currentViewType === 'tasks') {
+                    const dueDate = formatDateTime(item.dueDate);
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                                    onchange="toggleSelectRecord('${item.id}', this.checked)">
+                            </td>
+                            <td>${item.taskName}</td>
+                            <td>${item.description}</td>
+                            <td>${item.status}</td>
+                            <td>${dueDate}</td>
+                            <td>${item.assignedTo}</td>
+                        </tr>
+                    `;
+                } else if (currentViewType === 'contacts') {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                                    onchange="toggleSelectRecord('${item.contactId}', this.checked)">
+                            </td>
+                            <td>${item.contactName}</td>
+                            <td>${item.mobileNumber}</td>
+                            <td>${item.emailAddress}</td>
+                            <td>${item.contactOwner}</td>
+                            <td>${item.companyName}</td>
+                        </tr>
+                    `;
+                }
+            }
+            
+            // Update select all checkbox state
+            updateSelectAllCheckbox();
+        }
+        
+        function toggleSelectAll(checked) {
+            // Get all records on current page
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const recordId = currentViewType === 'tasks' ? filteredData[i].id : filteredData[i].contactId;
+                if (checked) {
+                    selectedRecords.add(recordId);
+                } else {
+                    selectedRecords.delete(recordId);
+                }
+            }
+            
+            // Re-render table to update checkboxes
+            renderTable();
+        }
+        
+        function toggleSelectRecord(recordId, checked) {
+            if (checked) {
+                selectedRecords.add(recordId);
+            } else {
+                selectedRecords.delete(recordId);
+            }
+            updateSelectAllCheckbox();
+        }
+        
+        function updateSelectAllCheckbox() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (!selectAllCheckbox) return;
+            
+            // Get all records on current page
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+            const pageRecords = filteredData.slice(startIndex, endIndex);
+            
+            // Check if all records on page are selected
+            const allSelected = pageRecords.every(record => {
+                const recordId = currentViewType === 'tasks' ? record.id : record.contactId;
+                return selectedRecords.has(recordId);
+            });
+            
+            selectAllCheckbox.checked = allSelected;
+            selectAllCheckbox.indeterminate = !allSelected && 
+                pageRecords.some(record => {
+                    const recordId = currentViewType === 'tasks' ? record.id : record.contactId;
+                    return selectedRecords.has(recordId);
+                });
+        }
+        
+        function updatePaginationControls() {
+            // Update page info
+            document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // Enable/disable pagination buttons
+            document.getElementById('first-page').disabled = currentPage === 1;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
+            document.getElementById('last-page').disabled = currentPage === totalPages || totalPages === 0;
+        }
+        
+        function changeRecordsPerPage() {
+            recordsPerPage = parseInt(document.getElementById('records-per-page').value);
+            currentPage = 1; // Reset to first page when changing records per page
+            updatePaginationControls();
+            renderTable();
+        }
+        
+        function goToPage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderTable();
+                updatePaginationControls();
+            }
+        }
+        
+        function goToPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePaginationControls();
+            }
+        }
+        
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePaginationControls();
+            }
+        }
+        
+        function refreshData() {
+            fetchData();
+        }
+        
+        function goBack() {
+            document.getElementById('data-section').style.display = 'none';
+            document.querySelector('.form-container').style.display = 'flex';
+            document.querySelector('.container h2').textContent = 'Custom Forms';
+        }
+        
+        // Mock data generators
+        function generateMockTasks() {
+            const statuses = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
+            const assignees = ['John Doe', 'Jane Smith', 'Mike Johnson'];
+            const mockTasks = [];
+            
+            for (let i = 1; i <= 1000; i++) {
+                const randomDays = Math.floor(Math.random() * 30) - 5; // Some tasks will be overdue
+                const dueDate = new Date();
+                dueDate.setDate(dueDate.getDate() + randomDays);
+                
+                mockTasks.push({
+                    id: `TASK-${1000 + i}`,
+                    taskName: `Task ${i}`,
+                    description: `This is a description for task ${i}`,
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                    dueDate: dueDate.toISOString(),
+                    assignedTo: assignees[Math.floor(Math.random() * assignees.length)],
+                    createdTime: new Date().toISOString(),
+                    modifiedTime: new Date().toISOString()
+                });
+            }
+            
+            return mockTasks;
+        }
+        
+        function generateMockContacts() {
+            const owners = ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Williams'];
+            const companies = ['ABC Corp', 'XYZ Inc', 'Acme Ltd', 'Globex Corp', 'Initech'];
+            const mockContacts = [];
+            
+            for (let i = 1; i <= 1000; i++) {
+                const createdDate = new Date();
+                createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
+                
+                const modifiedDate = new Date(createdDate);
+                modifiedDate.setDate(modifiedDate.getDate() + Math.floor(Math.random() * 10));
+                
+                const lastDelivered = new Date(modifiedDate);
+                lastDelivered.setDate(lastDelivered.getDate() + Math.floor(Math.random() * 5));
+                
+                mockContacts.push({
+                    contactId: `CONT-${2000 + i}`,
+                    contactName: `Contact ${i}`,
+                    mobileNumber: `555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`,
+                    emailAddress: `contact${i}@example.com`,
+                    contactOwner: owners[Math.floor(Math.random() * owners.length)],
+                    isBlocked: Math.random() > 0.9,
+                    isOptIn: Math.random() > 0.7,
+                    lastDelivered: lastDelivered.toISOString(),
+                    lastRead: new Date(lastDelivered.getTime() + Math.random() * 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    lastReplied: Math.random() > 0.5 ? new Date(lastDelivered.getTime() + Math.random() * 24 * 60 * 60 * 1000).toISOString() : null,
+                    companyName: companies[Math.floor(Math.random() * companies.length)],
+                    lastSend: new Date(lastDelivered.getTime() - Math.random() * 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    createdDateTime: createdDate.toISOString(),
+                    modifiedTimeDate: modifiedDate.toISOString(),
+                    lastViewedTimeDate: new Date(modifiedDate.getTime() + Math.random() * 24 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            return mockContacts;
+        }
+    </script>
+</body>
+</html>

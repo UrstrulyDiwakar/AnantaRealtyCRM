@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ananta Realty - Import Data</title>
+<style>
+body {
+	font-family: 'Poppins', sans-serif;
+	background-color: #f4f6f9;
+	margin: 0;
+	padding: 0;
+	color: #333;
+}
+
+.header {
+	background: #1d2d44;
+	color: white;
+	padding: 15px;
+	text-align: center;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	padding: 30px;
+}
+
+.import-section, .info-section {
+	background: white;
+	padding: 25px;
+	border-radius: 12px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	flex: 1;
+	min-width: 350px;
+}
+
+.info-section {
+	max-width: 350px;
+}
+
+.note {
+	background: #e9ecef;
+	padding: 12px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.btn {
+	padding: 12px 18px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+.btn-primary {
+	background: #01ed09;
+	color: white;
+}
+
+.btn-secondary {
+	background: #ff1111;
+	color: white;
+}
+
+.btn:hover {
+	opacity: 0.85;
+}
+
+.file-input {
+	margin-top: 15px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+input[type="file"] {
+	border: 1px solid #ddd;
+	padding: 8px;
+	border-radius: 8px;
+}
+
+ul {
+	padding-left: 20px;
+	line-height: 1.6;
+}
+
+/* Popup styles */
+.popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	display: none;
+}
+
+.popup-content {
+	background: white;
+	padding: 25px;
+	border-radius: 12px;
+	width: 350px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.popup-header {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	color: #1d2d44;
+}
+
+.popup-input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	margin-bottom: 20px;
+	box-sizing: border-box;
+}
+
+.popup-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+.popup-btn {
+	padding: 8px 16px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+}
+
+.popup-download {
+	background: #01ed09;
+	color: white;
+	border: none;
+}
+
+.popup-cancel {
+	background: #f0f0f0;
+	color: #333;
+	border: 1px solid #ddd;
+}
+
+/* Mapping table styles */
+.mapping-section {
+	display: none;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.mapping-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 15px;
+}
+
+.mapping-table th, .mapping-table td {
+	border: 1px solid #ddd;
+	padding: 10px;
+	text-align: left;
+}
+
+.mapping-table th {
+	background-color: #f4f6f9;
+	font-weight: bold;
+}
+
+.mapping-table select {
+	width: 100%;
+	padding: 8px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+}
+
+.mapping-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+/* Duplicate field styling */
+.duplicate-field {
+	background-color: #ffdddd;
+	border: 1px solid #ff9999;
+}
+
+@media ( max-width : 768px) {
+	.container {
+		flex-direction: column;
+		align-items: center;
+		padding: 20px;
+	}
+	.import-section, .info-section {
+		width: 100%;
+		max-width: 100%;
+	}
+	.popup-content {
+		width: 90%;
+	}
+}
+</style>
+</head>
+<body>
+
+	<div class="container">
+		<div class="import-section">
+			<h3>Browse/Import</h3>
+			<p class="note">
+				<strong>Note:</strong> Download the sample file for reference and
+				upload your data file for import.
+			</p>
+			<p class="note">
+				<strong>Note:</strong> If you want to use clean sample for
+				importing, click the download button BELOW
+			</p>
+			<button id="downloadSampleBtn" class="btn btn-primary">↓
+				Download Sample File</button>
+			<div class="file-input">
+				<input type="file" id="fileInput" accept=".csv,.xlsx">
+			</div>
+			<div class="import-actions">
+				<button id="nextBtn" class="btn btn-primary">→ Next</button>
+				<button class="btn btn-secondary">✕ Cancel</button>
+			</div>
+
+			<!-- Mapping section (hidden initially) -->
+			<div id="mappingSection" class="mapping-section">
+				<h3>Mapping fields</h3>
+				<p class="note">
+					<strong>Note:</strong> Map the Loads Fields with the appropriate
+					columns of the source file that you import.
+				</p>
+
+				<div>
+					<input type="checkbox" id="saveAsDefault"> <label
+						for="saveAsDefault">Save This Field Mapping As Default</label>
+				</div>
+
+				<button id="autoMapBtn" class="btn btn-primary"
+					style="margin: 10px 0;">Apply Auto Field Mapping</button>
+
+				<table class="mapping-table">
+					<thead>
+						<tr>
+							<th>Field Name in Loads</th>
+							<th>Header Name in file</th>
+							<th>Sample Record 1</th>
+							<th>Sample Record 2</th>
+						</tr>
+					</thead>
+					<tbody id="mappingTableBody">
+						<!-- Will be populated by JavaScript -->
+					</tbody>
+				</table>
+
+				<div class="mapping-actions">
+					<button id="backBtn" class="btn btn-secondary">Back</button>
+					<button id="importBtn" class="btn btn-primary">Import</button>
+				</div>
+			</div>
+		</div>
+		<div class="info-section">
+			<h4>Supported Formats</h4>
+			<ul>
+				<li>Use .CSV file format when importing records.</li>
+			</ul>
+			<h4>Maximum Limits</h4>
+			<ul>
+				<li>Maximum 10,000 records per batch.</li>
+			</ul>
+			<h4>Important Notes</h4>
+			<ul>
+				<li>Import a small set of sample records before importing all
+					data.</li>
+				<li>Duplicate records will be updated using a unique value
+					(mobile/email).</li>
+				<li>If "Assigned To" is missing, the system assigns the
+					logged-in user.</li>
+				<li>Ensure system values match dropdown selections correctly.</li>
+				<li>Date format should be DD/MM/YYYY.</li>
+				<li>Date Time values should follow the DD/MM/YYYY hh:mm:ss
+					format.</li>
+				<li>The checkbox value must be either "YES" or "NO".</li>
+				<li>The import option is accessible exclusively for
+					Administrator and Manager profiles.</li>
+				<li>You can refer to the Import log to monitor the status of
+					the import process.</li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Popup for filename input -->
+	<div class="popup-overlay" id="filenamePopup">
+		<div class="popup-content">
+			<div class="popup-header">Download Sample CSV File</div>
+			<input type="text" id="filenameInput" class="popup-input"
+				placeholder="Enter filename" value="samplelead">
+			<div class="popup-actions">
+				<button id="cancelDownloadBtn" class="popup-btn popup-cancel">Cancel</button>
+				<button id="confirmDownloadBtn" class="popup-btn popup-download">Download</button>
+			</div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const downloadSampleBtn = document.getElementById('downloadSampleBtn');
+    const filenamePopup = document.getElementById('filenamePopup');
+    const filenameInput = document.getElementById('filenameInput');
+    const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
+    const cancelDownloadBtn = document.getElementById('cancelDownloadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const nextBtn = document.getElementById('nextBtn');
+    const mappingSection = document.getElementById('mappingSection');
+    const backBtn = document.getElementById('backBtn');
+    const autoMapBtn = document.getElementById('autoMapBtn');
+    const importBtn = document.getElementById('importBtn');
+    const mappingTableBody = document.getElementById('mappingTableBody');
+    const recordCountDisplay = document.getElementById('recordCount');
+
+    // Data storage
+    let csvHeaders = [];
+    let csvData = [];
+
+    // Field name mapping
+    const fieldNameMapping = {
+        'Lead Source': { target: 'sourceInfo.leadSource', type: 'string' },
+        'Lead Owner': { target: 'leadOwner', type: 'string' },
+        'Lead Owner Email': { target: 'leadOwnerEmail', type: 'string' },
+        'Contact Name': { target: 'contactName', type: 'string' },
+        'Mobile Number': { target: 'mobileNumber', type: 'string' },
+        'Alternate Number': { target: 'alternateNumber', type: 'string' },
+        'Email Address': { target: 'emailAddress', type: 'string' },
+        'Lead Stage': { target: 'leadStage', type: 'string' },
+        'Description': { target: 'description', type: 'string' },
+        'Expected Revenue': { target: 'expectedRevenue', type: 'number' },
+        'Next Follow-up Notes': { target: 'nextFollowUpNotes', type: 'string' },
+        'Next Follow-up On': { target: 'nextFollowUpOn', type: 'date' },
+        'Site Visited': { target: 'siteVisited', type: 'boolean' },
+        'Created By': { target: 'sourceInfo.createdBy', type: 'string' },
+        'Lead Date': { target: 'leadDate', type: 'date' }
+    };
+
+    // Default values with required fields
+    const defaultLeadValues = {
+        description: "",
+        expectedRevenue: 0,
+        leadDate: new Date().toISOString().split('T')[0],
+        leadOwnerEmail: "loginUser@gmail.com",
+        nextFollowUpNotes: "",
+        nextFollowUpOn: "",
+        siteVisited: false,
+        alternateNumber: "",
+        emailAddress: null,
+        mobileNumber: null, // Will be required
+        sourceInfo: {
+            campaignContent: null,
+            campaignName: null,
+            campaignTeam: null,
+            createdBy: "Admin",
+            leadDate: null,
+            leadSource: null
+        }
+    };
+
+    // Event Listeners
+    downloadSampleBtn.addEventListener('click', showFilenamePopup);
+    cancelDownloadBtn.addEventListener('click', hideFilenamePopup);
+    confirmDownloadBtn.addEventListener('click', handleDownloadConfirm);
+    nextBtn.addEventListener('click', handleNextClick);
+    backBtn.addEventListener('click', hideMappingSection);
+    autoMapBtn.addEventListener('click', autoMapFields);
+    importBtn.addEventListener('click', importData);
+
+    // Functions
+    function showFilenamePopup() {
+        filenamePopup.style.display = 'flex';
+    }
+
+    function hideFilenamePopup() {
+        filenamePopup.style.display = 'none';
+    }
+
+    function handleDownloadConfirm() {
+        const filename = filenameInput.value.trim() || 'samplelead';
+        downloadSampleCSV(filename);
+        hideFilenamePopup();
+    }
+
+    function downloadSampleCSV(filename) {
+        const csvContent = [
+            "Lead Source,Lead Owner,Lead Owner Email,Contact Name,Mobile Number,Alternate Number,Email Address,Lead Stage,Description,Expected Revenue,Next Follow-up Notes,Next Follow-up On,Site Visited,Created By,Lead Date",
+            "Website,John Doe,john@gmail.com,Alice Johnson,9876543210,9876543211,alice@example.com,New,Happy customer,98000,Onboard client,11/03/2025,Yes,Admin,10/02/2025",
+            "Referral,Jane Smith,jane@gmail.com,Bob Williams,8765432109,,bob@example.com,Contacted,Potential client,75000,Follow up,15/03/2025,No,Admin,12/02/2025"
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${filename}.csv`;
+        link.click();
+    }
+	let importFileName="";
+    async function handleNextClick() {
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Please select a file first.');
+            return;
+        }
+        importFileName = file.name;
+        console.log('Processing file:', file.name);
+        if (file.name.endsWith('.csv')) {
+            await processCSV(file);
+        } else {
+            alert('Please upload a CSV file.');
+        }
+    }
+
+    async function processCSV(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                console.log('Raw file content:', e.target.result);
+                
+                // Robust CSV parsing that handles quoted values
+                const parseCSVLine = (line) => {
+                    const result = [];
+                    let inQuotes = false;
+                    let currentField = '';
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            result.push(currentField.trim());
+                            currentField = '';
+                        } else {
+                            currentField += char;
+                        }
+                    }
+                    
+                    // Add the last field
+                    result.push(currentField.trim());
+                    return result;
+                };
+
+                // Process all lines
+                const lines = e.target.result.split(/\r?\n/)
+                    .map(line => line.trim())
+                    .filter(line => line !== '');
+                
+                console.log('Lines after splitting:', lines);
+
+                if (lines.length < 2) {
+                    alert('CSV file must contain at least one data row');
+                    return resolve();
+                }
+
+                // Parse headers
+                csvHeaders = parseCSVLine(lines[0]);
+                csvData = [];
+
+                // Parse data rows
+                for (let i = 1; i < lines.length; i++) {
+                    const values = parseCSVLine(lines[i]);
+                    
+                    if (values.length === csvHeaders.length) {
+                        csvData.push(values);
+                    } else {
+                        console.warn('Skipping malformed row. Expected:', csvHeaders.length, 'Got:', values.length, 'Row:', values);
+                    }
+                }
+
+                console.log('Processed CSV data:', {
+                    headers: csvHeaders,
+                    rowCount: csvData.length,
+                    sampleRows: csvData.slice(0, 3)
+                });
+
+                // Only proceed if we have valid data
+                if (csvData.length > 0) {
+                    showMappingInterface();
+                } else {
+                    alert('No valid data rows found in CSV');
+                }
+                
+                resolve();
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    function showMappingInterface() {
+        if (!mappingTableBody) {
+            console.error('Mapping table body not found');
+            return;
+        }
+        
+        mappingTableBody.innerHTML = '';
+        
+        // Safely update record count display if it exists
+        if (recordCountDisplay) {
+            recordCountDisplay.textContent = `Found ${csvData.length} valid records to import`;
+        } else {
+            console.warn('Record count display element not found');
+        }
+
+        csvHeaders.forEach((header, headerIndex) => {
+            const row = document.createElement('tr');
+            
+            // Field mapping dropdown
+            const fieldCell = document.createElement('td');
+            const fieldSelect = document.createElement('select');
+            fieldSelect.className = 'field-select';
+            fieldSelect.innerHTML = '<option value="">-- Do not map --</option>';
+            
+            Object.keys(fieldNameMapping).forEach(field => {
+                fieldSelect.innerHTML += `<option value="${field}">${field}</option>`;
+            });
+            
+            // Auto-select based on header name
+            const headerLower = header.toLowerCase();
+            for (const field of Object.keys(fieldNameMapping)) {
+                if (headerLower.includes(field.toLowerCase())) {
+                    fieldSelect.value = field;
+                    break;
+                }
+            }
+            
+            fieldCell.appendChild(fieldSelect);
+            row.appendChild(fieldCell);
+            
+            // Header name
+            const headerCell = document.createElement('td');
+            headerCell.textContent = header;
+            row.appendChild(headerCell);
+            
+            // Sample data (first 2 rows)
+            for (let i = 0; i < Math.min(2, csvData.length); i++) {
+                const sampleCell = document.createElement('td');
+                sampleCell.textContent = (csvData[i][headerIndex] || '').slice(0, 50); // Limit length
+                row.appendChild(sampleCell);
+            }
+            
+            mappingTableBody.appendChild(row);
+            fieldSelect.addEventListener('change', validateFieldSelections);
+        });
+        
+        mappingSection.style.display = 'block';
+        validateFieldSelections();
+    }
+
+    function hideMappingSection() {
+        mappingSection.style.display = 'none';
+    }
+
+    function validateFieldSelections() {
+        const selects = document.querySelectorAll('.field-select');
+        const usedFields = new Set();
+        const duplicateFields = new Set();
+        
+        selects.forEach(select => {
+            if (select.value && usedFields.has(select.value)) {
+                duplicateFields.add(select.value);
+            }
+            usedFields.add(select.value);
+        });
+        
+        selects.forEach(select => {
+            select.classList.toggle('duplicate-field', 
+                select.value && duplicateFields.has(select.value));
+        });
+    }
+
+    function autoMapFields() {
+        const selects = document.querySelectorAll('.field-select');
+        const usedFields = new Set();
+        
+        selects.forEach((select, index) => {
+            if (index >= csvHeaders.length) return;
+            
+            const header = csvHeaders[index].toLowerCase();
+            let bestMatch = null;
+            let bestScore = 0;
+            
+            for (const field of Object.keys(fieldNameMapping)) {
+                if (usedFields.has(field)) continue;
+                
+                const fieldLower = field.toLowerCase();
+                const score = header.includes(fieldLower) ? fieldLower.length : 
+                             fieldLower.includes(header) ? header.length : 0;
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = field;
+                }
+            }
+            
+            select.value = bestMatch || '';
+            if (bestMatch) usedFields.add(bestMatch);
+        });
+        
+        validateFieldSelections();
+    }
+    //get current time zone fomate with time and date
+    function getCurrentISTDateTime() {
+        const now = new Date();
+        // IST is UTC+5:30
+        const timezoneOffset = 330; // 5 hours 30 minutes in minutes
+        const istTime = new Date(now.getTime() + timezoneOffset * 60000);
+        return istTime.toISOString().replace('Z', '');
+    }
+
+    async function importData() {
+        console.log('Starting import process...');
+        
+        // Get field mappings
+        const mappings = {};
+        const rows = mappingTableBody.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            if (index >= csvHeaders.length) return;
+            const select = row.querySelector('.field-select');
+            if (select.value && fieldNameMapping[select.value]) {
+                mappings[index] = {
+                    path: fieldNameMapping[select.value].target,
+                    type: fieldNameMapping[select.value].type
+                };
+            }
+        });
+        console.log('Field mappings:', mappings);
+
+        // Process records
+        const importedLeads = [];
+        const skippedLeads = [];
+        let skippedCount = 0; // Counter for skipped leads
+        const today = new Date().toISOString().split('T')[0];
+        const createdBy = await fetchLoggedInUsername();
+
+        for (const [rowIndex, row] of csvData.entries()) {
+            const lead = JSON.parse(JSON.stringify(defaultLeadValues));
+            lead.sourceInfo.createdBy = createdBy;
+            lead.leadHistory = {
+            	    lastViewed: null,
+            	    leadCreation: getCurrentISTDateTime(),
+            	    modifiedTime: getCurrentISTDateTime()
+            	};
+
+            // Map values
+            for (const [csvIndex, mapping] of Object.entries(mappings)) {
+                const colIndex = parseInt(csvIndex);
+                if (colIndex < row.length && row[colIndex]) {
+                    let value = row[colIndex].trim();
+                    let processedValue;
+                    switch (mapping.type) {
+                        case 'number':
+                            processedValue = parseFloat(value) || 0;
+                            break;
+                        case 'date':
+                        	// Special handling for nextFollowUpOn to include time
+                            if (mapping.path === 'nextFollowUpOn') {
+                                processedValue = formatFollowUpDateTime(value);
+                            } else {
+                                processedValue = formatDateForBackend(value);
+                            }
+                            break;
+                        case 'boolean':
+                            processedValue = value.toLowerCase() === 'yes' || value.toLowerCase() === 'true';
+                            break;
+                        default:
+                            processedValue = value;
+                    }
+                    setNestedValue(lead, mapping.path, processedValue);
+                }
+            }
+
+            // Set dates
+            if (lead.leadDate) {
+                lead.sourceInfo.leadDate = formatDateForBackend(lead.leadDate);
+            } else {
+                lead.leadDate = today;
+                lead.sourceInfo.leadDate = today;
+            }
+
+            // Validate required fields
+            const skipReasons = [];
+            if (!lead.mobileNumber) skipReasons.push("Missing mobile number");
+            if (!lead.leadStage) skipReasons.push("Missing lead stage");
+            if (!lead.leadOwnerEmail) skipReasons.push("Missing lead owner email");
+
+            if (skipReasons.length > 0) {
+                skippedLeads.push({
+                    rowNumber: rowIndex + 1, // Adding 1 to make it 1-based index
+                    data: row, // Include the full row data
+                    skipReason: skipReasons.join(", ")
+                });
+                skippedCount++; // Increment skipped counter
+                continue;
+            }
+
+            importedLeads.push(lead);
+        }
+
+        // Log skipped leads if any
+        if (skippedLeads.length > 0) {
+            console.group('Skipped Leads');
+            console.log(`Total skipped: ${skippedCount}`);
+            console.table(skippedLeads, ['rowNumber', 'skipReason']);
+            console.groupEnd();
+        }
+
+        console.log('Valid leads ready for import:', importedLeads);
+        if (importedLeads.length === 0) {
+            alert(`No valid leads to import. All ${skippedCount} leads were skipped.`);
+            return;
+        }
+
+        // Pass skipped leads to the importLeads function
+        await importLeads(importedLeads, importFileName, skippedLeads, skippedCount);
+    }
+    function formatFollowUpDateTime(dateString) {
+        if (!dateString) {
+            // If no follow-up date is provided, return null or current datetime
+            // return null; // or:
+            return new Date().toISOString(); // current datetime
+        }
+
+        // Try to parse the date with time
+        try {
+            // Handle date with time (e.g., "10-02-2025 12:30:00")
+            if (dateString.includes(' ')) {
+                const [datePart, timePart] = dateString.split(' ');
+                
+                // Parse date part (could be dd-MM-yyyy or dd/MM/yyyy)
+                let day, month, year;
+                if (datePart.includes('-')) {
+                    [day, month, year] = datePart.split('-');
+                } else if (datePart.includes('/')) {
+                    [day, month, year] = datePart.split('/');
+                }
+                
+                // Parse time part if exists
+                let hours = '00', minutes = '00', seconds = '00';
+                if (timePart) {
+                    const timeParts = timePart.split(':');
+                    hours = timeParts[0] || '00';
+                    minutes = timeParts[1] || '00';
+                    seconds = timeParts[2] || '00';
+                } else {
+                    // If no time provided, use start of day (00:00:00)
+                    hours = '00';
+                    minutes = '00';
+                    seconds = '00';
+                }
+                
+                // Create ISO string with time (Indian timezone)
+                if (day && month && year) {
+                    // Note: Months are 0-indexed in JavaScript Date
+                    const dateObj = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`);
+                    
+                    // Convert to ISO string and adjust for Indian timezone (IST is UTC+5:30)
+                    const timezoneOffset = dateObj.getTimezoneOffset() * 60000;
+                    const localISOTime = new Date(dateObj.getTime() - timezoneOffset).toISOString();
+                    
+                    return localISOTime;
+                }
+            }
+            
+            // Handle date-only formats - add default time (00:00:00)
+            // dd/MM/yyyy
+            if (dateString.includes('/')) {
+                const [d, m, y] = dateString.split('/');
+                if (d && m && y) {
+                    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}T00:00:00.000Z`;
+                }
+            }
+            
+            // dd-MM-yyyy
+            if (dateString.includes('-')) {
+                const [d, m, y] = dateString.split('-');
+                if (d && m && y && d.length === 2) {
+                    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}T00:00:00.000Z`;
+                }
+            }
+            
+            // Fallback to JS Date parsing (will use local timezone)
+            const dateObj = new Date(dateString);
+            if (!isNaN(dateObj)) {
+                // If no time component, set to start of day
+                if (dateString.length <= 10) {
+                    dateObj.setHours(0, 0, 0, 0);
+                }
+                
+                // Adjust for timezone offset to get correct datetime
+                const timezoneOffset = dateObj.getTimezoneOffset() * 60000;
+                const localISOTime = new Date(dateObj.getTime() - timezoneOffset).toISOString();
+                
+                return localISOTime;
+            }
+        } catch (e) {
+            console.warn('Failed to parse follow-up date:', dateString, e);
+        }
+        
+        // If all parsing fails, return current datetime
+        return new Date().toISOString();
+    }
+    function formatDateForBackend(dateString) {
+        if (!dateString) return null;
+        
+        // Already in ISO format (date only)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+        
+        // Already in ISO format with time
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(dateString)) {
+            return dateString.split('T')[0]; // Return just the date part
+        }
+        
+        try {
+            // Handle date with time (e.g., "10-02-2025 12:30:00")
+            if (dateString.includes(' ')) {
+                const [datePart, timePart] = dateString.split(' ');
+                
+                // Parse date part (could be dd-MM-yyyy or dd/MM/yyyy)
+                let day, month, year;
+                if (datePart.includes('-')) {
+                    [day, month, year] = datePart.split('-');
+                } else if (datePart.includes('/')) {
+                    [day, month, year] = datePart.split('/');
+                }
+                
+                // Parse time part if exists
+                let hours = '00', minutes = '00', seconds = '00';
+                if (timePart) {
+                    const timeParts = timePart.split(':');
+                    hours = timeParts[0] || '00';
+                    minutes = timeParts[1] || '00';
+                    seconds = timeParts[2] || '00';
+                }
+                
+                // Create ISO string with time (Indian timezone)
+                if (day && month && year) {
+                    // Note: Months are 0-indexed in JavaScript Date
+                    const dateObj = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`);
+                    
+                    // Convert to ISO string and adjust for Indian timezone (IST is UTC+5:30)
+                    const timezoneOffset = dateObj.getTimezoneOffset() * 60000;
+                    const localISOTime = new Date(dateObj.getTime() - timezoneOffset).toISOString();
+                    
+                    return localISOTime;
+                }
+            }
+            
+            // Handle date-only formats
+            // dd/MM/yyyy
+            if (dateString.includes('/')) {
+                const [d, m, y] = dateString.split('/');
+                if (d && m && y) return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
+            
+            // dd-MM-yyyy
+            if (dateString.includes('-')) {
+                const [d, m, y] = dateString.split('-');
+                if (d && m && y && d.length === 2) {
+                    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+                }
+            }
+            
+            // Fallback to JS Date parsing (will use local timezone)
+            const dateObj = new Date(dateString);
+            if (!isNaN(dateObj)) {
+                // Adjust for timezone offset to get correct date
+                const timezoneOffset = dateObj.getTimezoneOffset() * 60000;
+                const localISOTime = new Date(dateObj.getTime() - timezoneOffset).toISOString();
+                return localISOTime.split('T')[0]; // Return just the date part
+            }
+            
+            console.warn('Could not parse date:', dateString);
+            return null;
+        } catch (e) {
+            console.warn('Date format error:', dateString, e);
+            return null;
+        }
+    }
+
+    function setNestedValue(obj, path, value) {
+        const parts = path.split('.');
+        let current = obj;
+        
+        for (let i = 0; i < parts.length - 1; i++) {
+            if (!current[parts[i]]) current[parts[i]] = {};
+            current = current[parts[i]];
+        }
+        
+        current[parts[parts.length - 1]] = value;
+    }
+
+    async function fetchLoggedInUsername() {
+        try {
+            const response = await fetch('http://localhost:8085/api/getUsername');
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return await response.text();
+        } catch (error) {
+            console.error('Error fetching username:', error);
+            return 'Admin';
+        }
+    }
+
+    async function importLeads(leads, filename = 'manual-import', skippedLeads = [], skippedCount = 0) {
+        // Show loading overlay with animation
+        const loadingHtml = `
+            <div class="import-loading-overlay">
+                <div class="import-loading-content">
+                    <div class="import-spinner"></div>
+                    <h3>Importing Leads</h3>
+                    <p>Processing ${leads.length} leads. Please wait...</p>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', loadingHtml);
+
+        try {
+            console.log('Sending to server:', leads.slice(0, 3));
+            console.log('length to send backend' + leads.length)
+            const response = await fetch(`http://localhost:8085/api/import?filename=${encodeURIComponent(filename)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(leads)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `HTTP error ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Import successful:', result);
+
+            // Remove loading overlay
+            document.querySelector('.import-loading-overlay').remove();
+
+            // Combine skipped leads with rejected leads from the backend
+            const allRejectedLeads = [
+                ...(result.rejectedLeads || []).map(lead => ({
+                    rowNumber: lead.rowNumber,
+                    data: csvHeaders.map(header => {
+                        const mapping = Object.entries(fieldNameMapping).find(([name]) => 
+                            name.toLowerCase() === header.toLowerCase());
+                        if (mapping) {
+                            const [name, config] = mapping;
+                            return getNestedValue(lead, config.target);
+                        }
+                        return '';
+                    }),
+                    skipReason: lead.skipReason || "Rejected by backend"
+                })),
+                ...skippedLeads
+            ];
+
+            // Download combined rejected leads CSV
+            if (allRejectedLeads.length > 0) {
+                downloadRejectedLeadsCSV(allRejectedLeads, result.fileName);
+            }
+
+            // Update results with skipped count
+            result.skippedCount = skippedCount;
+
+            // Show beautiful results popup
+            showImportResultsPopup(result);
+        } catch (error) {
+            // Remove loading overlay if error occurs
+            const loadingElement = document.querySelector('.import-loading-overlay');
+            if (loadingElement) loadingElement.remove();
+            console.error('Import failed:', error);
+            showErrorPopup(`Import failed: ${error.message}`);
+        }
+    }
+
+    function downloadRejectedLeadsCSV(rejectedLeads, filename) {
+        if (!rejectedLeads || rejectedLeads.length === 0) return;
+
+        // Get the original CSV headers from the import
+        const headers = csvHeaders.join(',');
+
+        // Process each rejected lead to match original CSV structure
+        let csvContent = headers + '\n';
+        rejectedLeads.forEach(lead => {
+            const rowData = lead.data.map(value => {
+                // Format the value for CSV output
+                if (typeof value === 'string' && value.includes(',')) {
+                    return `"${value}"`; // Wrap strings with commas in quotes
+                }
+                return value || ''; // Use empty string for null/undefined values
+            });
+            csvContent += rowData.join(',') + '\n';
+        });
+
+        // Create download link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `rejected_leads_${filename || 'import'}_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Helper function to get nested values
+    function getNestedValue(obj, path) {
+        return path.split('.').reduce((o, p) => o?.[p], obj);
+    }
+
+    // Helper function to format dates for CSV output
+    function formatDateForCSV(dateString) {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            return isNaN(date) ? dateString : 
+                `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+        } catch {
+            return dateString;
+        }
+    }
+
+
+    function showImportResultsPopup(result) {
+        const resultData = result.data || result;
+        const totalProcessed = (resultData.inserted || 0) + 
+                              (resultData.updated || 0) + 
+                              (resultData.rejected || 0) + 
+                              (resultData.skippedCount || 0); // Include skipped count
+
+        const statusIcon = resultData.status === 'SUCCESS' ? '✓' :
+                         resultData.status === 'PARTIAL_SUCCESS' ? '⚠️' : '❌';
+
+        const rejectedSection = resultData.rejected > 0 || resultData.skippedCount > 0 ? `
+            <div class="import-result-section rejected">
+                <div class="import-result-icon">❌</div>
+                <div class="import-result-text">
+                    <strong>Rejected:</strong> ${resultData.rejected || 0}
+                    ${resultData.skippedCount > 0 ? `<br><strong>Skipped:</strong> ${resultData.skippedCount}` : ''}
+                    ${resultData.rejectedLeads?.length > 0 ? 
+                        '<div class="import-note">(CSV with rejected leads was downloaded automatically)</div>' : ''}
+                </div>
+            </div>
+        ` : '';
+
+        const html = `
+            <div class="import-results-popup">
+                <div class="import-header">
+                    <h2>Import Results</h2>
+                    <div class="import-status ${resultData.status.toLowerCase()}">
+                        ${statusIcon} ${resultData.status.replace('_', ' ')}
+                    </div>
+                </div>
+                <div class="import-summary">
+                    <div class="import-summary-item">
+                        <div class="import-summary-label">File:</div>
+                        <div class="import-summary-value">${resultData.fileName || 'Manual import'}</div>
+                    </div>
+                    <div class="import-summary-item">
+                        <div class="import-summary-label">Processed:</div>
+                        <div class="import-summary-value">${totalProcessed} leads</div>
+                    </div>
+                    <div class="import-summary-item">
+                        <div class="import-summary-label">Imported by:</div>
+                        <div class="import-summary-value">${resultData.updatedBy || 'System'}</div>
+                    </div>
+                    <div class="import-summary-item">
+                        <div class="import-summary-label">Time:</div>
+                        <div class="import-summary-value">${new Date(resultData.importTime).toLocaleString()}</div>
+                    </div>
+                </div>
+                <div class="import-results-grid">
+                    <div class="import-result-section inserted">
+                        <div class="import-result-icon">📥</div>
+                        <div class="import-result-text"><strong>Inserted:</strong> ${resultData.inserted || 0}</div>
+                    </div>
+                    <div class="import-result-section updated">
+                        <div class="import-result-icon">🔄</div>
+                        <div class="import-result-text"><strong>Updated:</strong> ${resultData.updated || 0}</div>
+                    </div>
+                    ${rejectedSection}
+                    <div class="import-result-section sources">
+                        <div class="import-result-icon">📊</div>
+                        <div class="import-result-text"><strong>Sources Created:</strong> ${resultData.sourceInfosCreated || 0}</div>
+                    </div>
+                </div>
+                <div class="import-actions">
+                    <button class="import-close-btn">Continue</button>
+                </div>
+            </div>
+        `;
+
+        // Create and show the popup
+        const popup = document.createElement('div');
+        popup.className = 'import-popup-overlay';
+        popup.innerHTML = html;
+        document.body.appendChild(popup);
+
+        // Add close handler
+        popup.querySelector('.import-close-btn').addEventListener('click', () => {
+            document.body.removeChild(popup);
+            window.location.href = 'leads.html';
+        });
+    }
+
+    function showErrorPopup(message) {
+        const html = `
+            <div class="import-results-popup error">
+                <div class="import-header">
+                    <h2>Import Failed</h2>
+                    <div class="import-status failed">❌ Error</div>
+                </div>
+                
+                <div class="import-error-message">
+                    ${message}
+                </div>
+                
+                <div class="import-actions">
+                    <button class="import-close-btn">OK</button>
+                </div>
+            </div>
+        `;
+        
+        const popup = document.createElement('div');
+        popup.className = 'import-popup-overlay';
+        popup.innerHTML = html;
+        document.body.appendChild(popup);
+        
+        popup.querySelector('.import-close-btn').addEventListener('click', () => {
+            document.body.removeChild(popup);
+        });
+    }
+
+    // Add this CSS to your stylesheet
+    const importStyles = `
+    .import-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .import-loading-content {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+    }
+
+    .import-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .import-popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .import-results-popup {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.3s ease;
+    }
+
+    .import-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .import-header h2 {
+        margin: 0;
+        color: #333;
+    }
+
+    .import-status {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .import-status.success {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .import-status.partial_success {
+        background: #fff8e1;
+        color: #ff8f00;
+    }
+
+    .import-status.failed {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .import-summary {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .import-summary-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .import-summary-label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .import-summary-value {
+        font-weight: 500;
+    }
+
+    .import-results-grid {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .import-result-section {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .import-result-icon {
+        font-size: 1.5rem;
+    }
+
+    .inserted {
+        background: #e8f5e9;
+    }
+
+    .updated {
+        background: #e3f2fd;
+    }
+
+    .rejected {
+        background: #ffebee;
+    }
+
+    .sources {
+        background: #f3e5f5;
+    }
+
+    .import-note {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    .import-actions {
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #eee;
+    }
+
+    .import-close-btn {
+        padding: 0.5rem 1.5rem;
+        background: #2196f3;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+    .import-close-btn:hover {
+        background: #1976d2;
+    }
+
+    .import-error-message {
+        padding: 1.5rem;
+        color: #c62828;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from { 
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to { 
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    `;
+
+    // Add styles to the document
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = importStyles;
+    document.head.appendChild(styleElement);
+});
+</script>
+
+
+</body>
+</html>

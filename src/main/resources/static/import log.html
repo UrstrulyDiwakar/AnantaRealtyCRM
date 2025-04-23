@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Log</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #063970;
+            color: white;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .navigation {
+            display: flex;
+            padding: 0 20px;
+        }
+        .nav-item {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            border-bottom: 4px solid #4CAF50;
+        }
+        .container {
+            padding: 0 20px;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .search-box {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            width: 200px;
+            background-color: #fff;
+        }
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-left: 5px;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+            color: white;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .records-per-page {
+            display: flex;
+            align-items: center;
+        }
+        .records-per-page label {
+            margin-right: 10px;
+        }
+        .records-per-page select {
+            padding: 5px;
+            border-radius: 15px;
+            border: none;
+        }
+        .pagination {
+            display: flex;
+            align-items: center;
+        }
+        .pagination-btn {
+            background-color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pagination-text {
+            margin: 0 10px;
+            color: white;
+        }
+        .refresh-btn {
+            background-color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .filter-dropdown select {
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: none;
+            appearance: none;
+            background-color: white;
+            min-width: 150px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        thead {
+            background-color: #f1f1f1;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .status-success {
+            color: green;
+        }
+        .status-failed {
+            color: red;
+        }
+        .status-partial {
+            color: orange;
+        }
+        .status-open {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="navigation">
+            <div class="nav-item">Field Customization</div>
+            <div class="nav-item">User Mobile Settings</div>
+            <div class="nav-item">Distribution Rules</div>
+            <div class="nav-item">Sender Email Address</div>
+            <div class="nav-item active">Import Log</div>
+            <div class="nav-item">Audit Log</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-container">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Search">
+            </div>
+        </div>
+        
+        <div class="toolbar">
+            <div class="records-per-page">
+                <label>Records per page</label>
+                <select>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                </select>
+            </div>
+            
+            <div class="pagination">
+                <button class="pagination-btn">⏮</button>
+                <button class="pagination-btn">◀</button>
+                <span class="pagination-text">1 - 70 / 70</span>
+                <button class="pagination-btn">▶</button>
+                <button class="pagination-btn">⏭</button>
+            </div>
+            
+            <button class="refresh-btn">↻ Refresh</button>
+            
+            <div class="filter-dropdown">
+                <select>
+                    <option value="recently-created">Recently Created</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn">➕</button>
+                <button class="action-btn">✏️</button>
+                <button class="action-btn">📁</button>
+            </div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="checkbox"></th>
+                    <th>IMPORT DATE</th>
+                    <th>FILE NAME</th>
+                    <th>RECORDS CREATED</th>
+                    <th>RECORDS UPDATE</th>
+                    <th>RECORDS IGNORED</th>
+                    <th>STATUS</th>
+                    <th>UPDATED USERNAME</th>
+                    <th>UPDATED TIME</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>14-Apr-2025 05:41 PM</td>
+                    <td>Leads (3).csv</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td class="status-success">Success</td>
+                    <td>Subramanyam</td>
+                    <td>14-Apr-2025 05:41 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>13-Apr-2025 03:46 PM</td>
+                    <td>SMDi1 indhu.csv</td>
+                    <td>3</td>
+                    <td>411</td>
+                    <td>1170</td>
+                    <td class="status-partial">Partial Failed</td>
+                    <td>Subramanyam</td>
+                    <td>13-Apr-2025 03:46 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>13-Apr-2025 03:39 PM</td>
+                    <td>smdm1 mahalakshmi.csv</td>
+                    <td>0</td>
+                    <td>668</td>
+                    <td>918</td>
+                    <td class="status-partial">Partial Failed</td>
+                    <td>Subramanyam</td>
+                    <td>13-Apr-2025 03:39 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>06-Apr-2025 10:17 AM</td>
+                    <td>sampleleadtest20.csv</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="status-failed">Failed</td>
+                    <td>TESTING</td>
+                    <td>06-Apr-2025 10:17 AM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>28-Mar-2025 05:41 PM</td>
+                    <td>Leads.csv</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td class="status-success">Success</td>
+                    <td>TESTING</td>
+                    <td>28-Mar-2025 05:41 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>28-Mar-2025 03:07 PM</td>
+                    <td>Leads (2).csv</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="status-open">Open</td>
+                    <td>TESTING</td>
+                    <td>28-Mar-2025 03:07 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>28-Mar-2025 12:59 PM</td>
+                    <td>Leads (2).csv</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="status-open">Open</td>
+                    <td>TESTING</td>
+                    <td>28-Mar-2025 12:59 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>28-Mar-2025 12:27 PM</td>
+                    <td>samplelead.csv</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="status-open">Open</td>
+                    <td>TESTING</td>
+                    <td>28-Mar-2025 12:27 PM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>26-Mar-2025 02:57 PM</td>
+                    <td>Leads.csv</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="status-open">Open</td>
+                    <td>Subramanyam</td>
+                    <td>26-Mar-2025 02:57 PM</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Add functionality for the search box
+        document.querySelector('.search-box input').addEventListener('input', function(e) {
+            const searchText = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchText) ? '' : 'none';
+            });
+        });
+        
+        // Checkbox functionality
+        const mainCheckbox = document.querySelector('thead .checkbox');
+        const rowCheckboxes = document.querySelectorAll('tbody .checkbox');
+        
+        mainCheckbox.addEventListener('change', function() {
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.checked = mainCheckbox.checked;
+            });
+        });
+        
+        // Simulate refresh button
+        document.querySelector('.refresh-btn').addEventListener('click', function() {
+            alert('Refreshing data...');
+            // In a real application, this would fetch new data
+        });
+        
+        // Add sorting functionality
+        document.querySelector('.filter-dropdown select').addEventListener('change', function(e) {
+            const sortBy = e.target.value;
+            alert(`Sorting by: ${sortBy}`);
+            // In a real application, this would sort the table
+        });
+    </script>
+</body>
+</html>

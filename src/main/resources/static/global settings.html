@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .tabs a.active {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+        }
+        .tabs a:hover {
+            color: #28a745;
+        }
+        .sub-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .sub-tabs a {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+        }
+        .sub-tabs a.active {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+        }
+        .sub-tabs a:hover {
+            color: #28a745;
+        }
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .setting-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .setting-item label {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        input:disabled + .slider {
+            background-color: #e0e0e0;
+        }
+        input:disabled + .slider:before {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <a href="#">Field Customization</a>
+            <a href="#" class="active">User Mobile Settings</a>
+            <a href="#">Distribution Rules</a>
+            <a href="#">Sender Email Address</a>
+            <a href="#">Import Log</a>
+            <a href="#">Audit Log</a>
+        </div>
+        <div class="sub-tabs">
+            <a href="#">User Settings</a>
+            <a href="#" class="active">Global Settings</a>
+        </div>
+        <div class="settings-list">
+            <div class="setting-item">
+                <label>Show call disposition popup after call</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label>Don't upload call logs of calls between CRM users</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" disabled>
+                    <span class="slider"></span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label>Don't upload call logs contacts not included in the CRM</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

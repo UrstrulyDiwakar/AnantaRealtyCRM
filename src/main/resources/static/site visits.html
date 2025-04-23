@@ -1,0 +1,1226 @@
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Enhanced Task Management Interface</title>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="js/sitevisits.js"></script>
+	
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+	
+	body {
+	    background-color: #f4f7fa;
+	    color: #333;
+	    line-height: 1.6;
+	    overflow: hidden;
+	}
+	
+	/* ✅ Main Container */
+	.container {
+	    display: flex;
+	    width: 100%;
+	    height: 100vh;
+	    gap: 10px;
+	    padding: 10px;
+	}
+	
+	
+	
+	
+	/* ✅ Sidebar (Left Div) */
+	.sidebar {
+		width: 300px;
+		background: #f8f9fa;
+		padding: 15px;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+	
+	.sidebar h3 {
+		font-size: 14px;
+		color: #2c3e50;
+		margin-bottom: 10px;
+		border-bottom: 1px solid #ddd;
+		padding-bottom: 5px;
+	}
+	
+	.sidebar label {
+		display: flex;
+		align-items: center;
+		font-size: 13px;
+		color: #333;
+		margin-bottom: 5px;
+		cursor: pointer;
+	}
+	
+	.sidebar input[type="checkbox"] {
+		margin-right: 10px;
+		accent-color: #27ae60;
+	}
+	
+	.sidebar select, .date-range input {
+		width: 100%;
+		padding: 6px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		background: white;
+		font-size: 13px;
+	}
+	
+	.user-list {
+		display: flex;
+		flex-direction: column;
+		max-height: 150px;
+		overflow-y: auto;
+		border: 1px solid #ddd;
+		padding: 5px;
+		border-radius: 5px;
+		background: white;
+	}
+	
+	button#applyFilter {
+		width: 100%;
+		padding: 10px;
+		background: #2ecc71;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-size: 13px;
+		margin-top: 10px;
+	}
+	
+	button#applyFilter:hover {
+		background: #27ae60;
+	}
+	
+	/* ✅ Right Section (Toolbar + Task List) */
+	
+.main-content {
+    margin-left: 300px; /* Adjust gap between sidebar and content */
+    width: calc(100% - 300px); /* Dynamic width adjustment */
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: relative;
+    min-height: 700px;
+    transition: all 0.3s ease-in-out;
+}
+
+	
+	/* ✅ Top Toolbar */
+	.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add spacing between elements */
+    justify-content: flex-start; /* Ensure left alignment */
+}
+
+	
+	.toolbar button {
+		padding: 8px 15px;
+		border: none;
+		border-radius: 5px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.3s;
+	}
+	
+	.new-task-btn {
+		background: #3498db;
+		color: white;
+	}
+	
+	.new-task-btn:hover {
+		background: #2980b9;
+	}
+	
+	.search-bar {
+		display: flex;
+		align-items: center;
+		flex-grow: 1;
+		position: relative;
+		max-width: 600px;
+		margin-left: 15px;
+	}
+	
+	.search-bar input {
+		width: 100%;
+		padding: 8px 35px 8px 10px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		background: white;
+		font-size: 14px;
+	}
+	
+	.search-icon {
+		position: absolute;
+		right: 10px;
+		font-size: 16px;
+		color: #7f8c8d;
+		cursor: pointer;
+	}
+	
+	.clear-btn {
+		background: #e67e22;
+		color: white;
+		margin-left: 10px;
+	}
+	
+	.clear-btn:hover {
+		background: #d35400;
+	}
+	
+	.refresh-btn {
+		background: #2ecc71;
+		color: white;
+		margin-left: 10px;
+	}
+	
+	.refresh-btn:hover {
+		background: #27ae60;
+	}
+	
+	/* ✅ Task List Container */
+	.task-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 10px;
+		background: white;
+		border-radius: 5px;
+		max-height: 600px;
+		overflow-y: auto;
+	}
+	
+	/* ✅ Individual Task Styling */
+	.task-item {
+		background: white;
+		padding: 12px;
+		border-radius: 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		position: relative;
+	}
+	
+	/* ✅ Status Colors */
+	.task-item.closed {
+		background: #d3d3d3; /* Grey for closed */
+		border-left: 5px solid #7f8c8d;
+	}
+	
+	.task-item.overdue {
+		background: #fdecea; /* Light red */
+		border-left: 5px solid #e74c3c;
+	}
+	
+	.task-item.open {
+		background: #e8f5e9; /* Light green */
+		border-left: 5px solid #27ae60;
+	}
+	
+	/* ✅ Task Title */
+	.task-title {
+		font-size: 14px;
+		font-weight: bold;
+		margin-bottom: 2px;
+	}
+	
+	/* ✅ Leads Link */
+	.task-lead {
+		font-size: 13px;
+	}
+	
+	.task-lead a {
+		color: #2980b9;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	
+	/* ✅ Due Date & Comments */
+	.task-meta {
+		font-size: 12px;
+		color: #7f8c8d;
+		margin-top: 2px;
+	}
+	
+	/* ✅ Edit Button */
+	.task-actions {
+		position: absolute;
+		right: 10px;
+		top: 8px;
+	}
+	
+	.task-actions a {
+		color: #2980b9;
+		text-decoration: none;
+		font-size: 12px;
+	}
+	
+	.task-actions a:hover {
+		text-decoration: underline;
+	}
+	
+	/* ✅ Ensure Task Container is Relative */
+	/* ✅ Task List Container */
+	.task-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 10px;
+		background: white;
+		border-radius: 5px;
+		max-height: 600px;
+		overflow-y: auto;
+	}
+	
+	/* ✅ Task Item (Ensures Left Alignment) */
+	.task-item {
+		background: white;
+		border-left: 4px solid #3498db;
+		padding: 12px;
+		border-radius: 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		flex-direction: column;
+	}
+	
+	/* ✅ Wrapper (Checkbox + Content Together) */
+	.task-wrapper {
+		display: flex;
+		align-items: center;
+		flex-grow: 1;
+	}
+	
+	/* ✅ Checkbox (Ensures Close Alignment) */
+	.task-checkbox {
+		width: 16px;
+		height: 16px;
+		margin-right: 25px; /* ✅ Just enough space */
+		cursor: pointer;
+	}
+	
+	/* ✅ Task Content (No Extra Margin) */
+	.task-content {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+	}
+	
+	/* ✅ Task Title */
+	.task-title {
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	/* ✅ Leads Link */
+	.task-lead {
+		font-size: 13px;
+	}
+	
+	.task-lead a {
+		color: #2980b9;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	
+	/* ✅ Due Date & Comments */
+	.task-meta {
+		font-size: 12px;
+		color: #7f8c8d;
+	}
+	
+	/* ✅ Edit Button (No Shifting) */
+	.task-actions {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	
+	/* ✅ Disabled Checkbox */
+	.task-checkbox:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+	
+	.task-checkbox:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+	
+	/* ✅ Task Form Styles */
+	.task-form-container {
+		position: fixed;
+		right: 20px;
+		top: 100px;
+		width: 300px;
+		background: white;
+		padding: 15px;
+		border-radius: 5px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		border: 1px solid #27ae60;
+		display: none;
+		z-index: 1000;
+	}
+	
+	.task-form label {
+		display: block;
+		font-size: 14px;
+		color: #2c3e50;
+		margin-bottom: 4px;
+	}
+	
+	.task-form input, .task-form select {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 13px;
+		margin-bottom: 8px;
+	}
+	
+	/* ✅ Add required * sign for Task Name */
+	.task-form label .required {
+		color: red;
+	}
+	
+	/* ✅ Assigned To Field with Icon */
+	.assigned-container {
+		position: relative;
+	}
+	
+	.assigned-container select {
+		width: calc(100% - 30px);
+		display: inline-block;
+	}
+	
+	.user-icon {
+		position: absolute;
+		right: 8px;
+		top: 19px;
+		transform: translateY(-50%);
+		font-size: 16px;
+		color: #7f8c8d;
+	}
+	
+	/* ✅ Due Date & Time Fields Side by Side */
+	.due-date-container {
+		display: flex;
+		gap: 10px;
+	}
+	
+	.due-date-container input {
+		flex: 1;
+	}
+	
+	/* ✅ Task Form Buttons */
+	.task-form-buttons {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+	}
+	
+	.save-btn {
+		background: #2ecc71;
+		color: white;
+		border: none;
+		padding: 8px 15px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	
+	.save-btn:hover {
+		background: #27ae60;
+	}
+	
+	.cancel-btn {
+		background: #e67e22;
+		color: white;
+		border: none;
+		padding: 8px 15px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	
+	.cancel-btn:hover {
+		background: #d35400;
+	}
+	
+	/* css for popup */
+	.user-container {
+		background: white;
+		padding: 20px;
+		border-radius: 5px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		max-width: 400px;
+		margin: auto;
+	}
+	
+	.user-list {
+		list-style: none;
+		padding: 0;
+	}
+	
+	.user-list li {
+		padding: 8px;
+		border-bottom: 1px solid #ddd;
+		cursor: pointer;
+	}
+	
+	.user-list li:hover {
+		background: #2ecc71;
+		color: white;
+	}
+	
+	.close-btn {
+		margin-top: 10px;
+		padding: 8px 15px;
+		background: #e74c3c;
+		color: white;
+		border: none;
+		cursor: pointer;
+	}
+	
+	.user-icon, .related-icon {
+		cursor: pointer; /* ✅ Changes the cursor to a hand symbol */
+	}
+	
+	/* ✅ Container for Related To */
+	.related-container {
+		position: relative;
+	}
+	
+	.related-container input {
+		width: calc(100% - 30px);
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 13px;
+		background: #fff;
+		cursor: pointer;
+	}
+	
+	/* ✅ Icon for Related To */
+	.related-icon {
+		position: absolute;
+		right: 8px;
+		top: 17px;
+		transform: translateY(-50%);
+		font-size: 16px;
+		color: #7f8c8d;
+		cursor: pointer;
+	}
+	
+	/* ✅ Popup Background */
+	.popup-container {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.4);
+		justify-content: center;
+		align-items: center;
+		z-index: 1000;
+	}
+	
+	/* ✅ Popup Box */
+	.popup-content {
+		background: white;
+		width: 400px;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	}
+	
+	/* ✅ Popup Header */
+	.popup-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+	
+	.popup-header h3 {
+		font-size: 16px;
+		color: #333;
+	}
+	
+	.close-btn {
+		background: none;
+		border: none;
+		font-size: 18px;
+		cursor: pointer;
+		color: #e74c3c;
+	}
+	
+	/* ✅ Search Bar */
+	.popup-body input {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		margin-bottom: 10px;
+	}
+	
+	/* ✅ List of Related Items */
+	.popup-list {
+		max-height: 250px;
+		overflow-y: auto;
+		border: 1px solid #ddd;
+		padding: 5px;
+		border-radius: 5px;
+		background: white;
+	}
+	
+	.popup-list div {
+		padding: 8px;
+		border-bottom: 1px solid #ddd;
+		cursor: pointer;
+	}
+	
+	.popup-list div:hover {
+		background: #2ecc71;
+		color: white;
+	}
+	
+	/* ✅ Popup Overlay */
+	.popup-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		display: none;
+		justify-content: center;
+		align-items: center;
+		z-index: 1000;
+	}
+	
+	/* ✅ Popup Content */
+	.popup-content {
+		background: white;
+		width: 75%;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+		overflow: hidden;
+	}
+	
+	/* ✅ Popup Header */
+	.popup-header {
+		background: #2a9d8f;
+		color: white;
+		padding: 12px 16px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	
+	.popup-header h3 {
+		margin: 0;
+		font-size: 18px;
+	}
+	
+	.close-popup {
+		cursor: pointer;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	
+	/* ✅ Popup Body */
+	.popup-body {
+		padding: 15px;
+		max-height: 400px;
+		overflow-y: auto;
+	}
+	
+	/* ✅ Table Styling */
+	.popup-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	
+	.popup-table th, .popup-table td {
+		padding: 10px;
+		border-bottom: 1px solid #ddd;
+		text-align: left;
+	}
+	
+	.popup-table th {
+		background: #f4f4f4;
+		font-size: 14px;
+	}
+	
+	/* ✅ Hover Effect */
+	.popup-table tbody tr:hover {
+		background: #e0f7fa;
+		cursor: pointer;
+	}
+	
+	/* ✅ Task List Styling */
+	.task-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 10px;
+		background: white;
+		border-radius: 5px;
+		max-height: 600px;
+		overflow-y: auto;
+	}
+	
+	/* ✅ Individual Task Styling */
+	.task-item {
+		background: white;
+		border-left: 4px solid #3498db;
+		padding: 12px;
+		border-radius: 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+	
+	.task-item.overdue {
+		border-left-color: #e74c3c;
+		background: #fbe3e3;
+	}
+	
+	.task-item.closed {
+		border-left-color: #7f8c8d;
+		background: #e5e5e5;
+	}
+	
+	.task-header {
+		display: flex;
+		justify-content: space-between;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.task-meta {
+		font-size: 12px;
+		color: #7f8c8d;
+	}
+	
+	.task-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+	
+	.task-actions a {
+		color: #2980b9;
+		text-decoration: none;
+		font-size: 13px;
+	}
+	
+	.task-actions a:hover {
+		text-decoration: underline;
+	}
+	
+	/* ✅ Completion Popup Styles */
+	/* ✅ Completion Popup Styles */
+	.completion-popup-overlay {
+		position: absolute;
+		/* Change to absolute so it can be positioned near the checkbox */
+		display: none;
+		z-index: 1000;
+	}
+	
+	.completion-popup-box {
+		background: white;
+		padding: 15px;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+		width: 350px;
+		text-align: left;
+		border: 1px solid #ccc;
+		position: absolute;
+	}
+	
+	.completion-close-popup {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+		cursor: pointer;
+		font-size: 18px;
+		color: red;
+	}
+	
+	.completion-popup-actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+	}
+	
+	.completion-complete-btn, .completion-followup-btn {
+		padding: 8px 15px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-size: 14px;
+		color: white;
+		flex: 1;
+		margin: 5px;
+	}
+	
+	.completion-complete-btn {
+		background: #27ae60;
+	}
+	
+	.completion-complete-btn:hover {
+		background: #219150;
+	}
+	
+	.completion-followup-btn {
+		background: #3498db;
+	}
+	
+	.completion-followup-btn:hover {
+		background: #2980b9;
+	}
+	
+	/* ✅ Follow-On Task Form Styling */
+	.follow-on-form {
+		position: absolute;
+		background: white;
+		width: 380px;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+		padding: 15px;
+		border: 2px solid #27ae60;
+		z-index: 1000;
+		display: none;
+	}
+	
+	.follow-on-form h3 {
+		font-size: 16px;
+		margin-bottom: 10px;
+		color: #333;
+	}
+	
+	.follow-on-form label {
+		display: block;
+		font-size: 14px;
+		margin-bottom: 5px;
+		color: #2c3e50;
+	}
+	
+	.follow-on-form input, .follow-on-form textarea {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		font-size: 14px;
+	}
+	
+	.follow-on-form .form-group {
+		margin-bottom: 10px;
+	}
+	
+	.follow-on-form .form-buttons {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+	}
+	
+	.follow-on-form .save-btn {
+		background: #27ae60;
+		color: white;
+		padding: 8px 15px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 14px;
+	}
+	
+	.follow-on-form .save-btn:hover {
+		background: #219150;
+	}
+	
+	.follow-on-form .close-btn {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		cursor: pointer;
+		font-size: 18px;
+		color: red;
+	}
+	
+	/* Positioning for Follow-On Task */
+	.follow-on-form.visible {
+		display: block;
+	}
+	
+	.task-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px; /* Space between Edit button and Lead Owner */
+	}
+	
+	.lead-owner {
+		font-size: 14px;
+		font-weight: bold;
+		color: #2c3e50;
+	}
+	
+	
+	/* ✅ Move Sidebar Further Left with Small Gap */
+.sidebar {
+    position: absolute;
+      /* Small gap from the left */
+    top: 10px;
+    bottom: 10px;
+    width: 260px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+	
+	.sidebar.collapsed {
+	    width: 0;
+	    padding: 0;
+	    overflow: hidden;
+	}
+	
+	/* ✅ Sidebar Toggle Button (Modern Look) */
+.sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    left: 270px; /* Adjusted to be fully visible */
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Sidebar Toggle Hover Effect */
+.sidebar-toggle:hover {
+    background: #1a252f;
+}
+
+/* ✅ Adjust Position When Sidebar is Collapsed */
+.sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+.sidebar.collapsed + .sidebar-toggle {
+    left: 20px; /* Button stays visible */
+}
+
+/* ✅ Change Symbol on Click */
+.sidebar.collapsed + .sidebar-toggle::after {
+    content: "❯"; /* Right-chevron when collapsed */
+}
+	
+
+	
+	/* ✅ Fixed Search Bar */
+	.toolbar {
+	    display: flex;
+	    align-items: center;
+	    background: #fff;
+	    padding: 12px;
+	    border-radius: 8px;
+	    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	    position: sticky;
+	    top: 0;
+	    z-index: 1000;
+	}
+	
+	/* ✅ Scrollable Task List */
+	.task-list {
+	    flex-grow: 1;
+	    overflow-y: auto;
+	    padding: 10px;
+	    border-radius: 5px;
+	    background: white;
+	    max-height: calc(100vh - 110px);
+	}
+	
+	/* ✅ Task List Expand/Collapse Button */
+	.task-toggle {
+	    position: absolute;
+	    right: 10px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    background: #3498db;
+	    color: white;
+	    border: none;
+	    padding: 5px 10px;
+	    cursor: pointer;
+	    transition: right 0.3s ease-in-out;
+	    border-radius: 5px 0 0 5px;
+	}
+	
+	.task-list.expanded {
+	    width: 100%;
+	}
+	
+	/* ✅ Responsive Design */
+	@media (max-width: 768px) {
+	    .sidebar {
+	        width: 200px;
+	    }
+	    .sidebar-toggle {
+	        left: 200px;
+	    }
+	}
+	</style>
+	</head>
+	<body>
+		<div class="container">
+	
+			<!-- ✅ Sidebar (Left Div) -->
+			<div class="sidebar">
+				<h3>Status</h3>
+				<label><input type="checkbox" id="statusOpen" checked>
+					Open</label> <label><input type="checkbox" id="statusOverdue">
+					Overdue</label> <label><input type="checkbox" id="statusClosed">
+					Closed</label>
+	
+				<h3>Date</h3>
+				<select id="dateFilter">
+					<option value="all">All Days</option>
+					<option value="today">Today</option>
+					<option value="yesterday">Yesterday</option>
+					<option value="last7days">Last 7 Days</option>
+					<option value="next7days">Next 7 Days</option>
+					<option value="custom">Custom</option>
+				</select>
+	
+				<div class="date-range" id="dateRange" style="display: none;">
+					<input type="text" id="startDate" placeholder="Start Date">
+					<input type="text" id="endDate" placeholder="End Date">
+				</div>
+	
+				<h3>User</h3>
+				<label><input type="checkbox" id="selectAllUsers">
+					Select All</label>
+				<div class="user-list"></div>
+	
+				<button id="applyFilter">Apply Filter</button>
+			</div>
+			<button class="sidebar-toggle">❮❮</button>
+
+			
+	
+			<!-- ✅ Main Content (Toolbar + Task List) -->
+			<div class="main-content">
+				<!-- ✅ Top Toolbar -->
+				<div class="toolbar">
+					<button class="new-task-btn">New Site Visit</button>
+					<div class="search-bar">
+						<input type="text" id="searchBar"
+							placeholder="Search by Description, Status, User, Customer...">
+					</div>
+					<button id="searchButton" class="search-icon">🔍</button>
+					<button class="clear-btn">Clear</button>
+					<button class="refresh-btn">Refresh</button>
+				</div>
+	
+				<!-- ✅ New Task Form -->
+				<div class="task-form-container" id="taskFormContainer">
+					<div class="task-form">
+						<h3>Create a New Site Visit</h3>
+						<label for="taskName"><span class="required">*</span> 
+							Site visit Details</label> <input type="text" id="taskName" required> <label
+							for="assignedTo">Assigned To</label>
+						<div class="assigned-container">
+							<input type="text" id="assignedTo" readonly> <span
+								class="user-icon" id="openUserPopup">👤</span>
+						</div>
+	
+						<label for="dueDate">Due Date</label> <input type="text"
+							id="dueDate"> <label for="dueTime">Due Time</label> <input
+							type="text" id="dueTime"> <label for="relatedTo">Related
+							To</label>
+						<div class="related-container">
+							<input type="text" id="relatedTo" readonly> <span
+								class="related-icon" id="openRelatedPopup">🔗</span>
+						</div>
+	
+						<div class="task-form-buttons">
+							<button class="save-btn" id="saveTask">Save</button>
+							<button class="cancel-btn" id="cancelNewTask">Cancel</button>
+						</div>
+					</div>
+				</div>
+	
+				<!-- ✅ Edit Task Form -->
+				<div class="task-form-container" id="editTaskFormContainer"
+					style="display: none;">
+					<div class="task-form">
+						<h3>Edit Site Visit</h3>
+						<label for="editTaskName"><span class="required">*</span>
+							Site Visit Details</label> <input type="text" id="editTaskName" required> <label
+							for="editAssignedTo">Assigned To</label>
+						<div class="assigned-container">
+							<input type="text" id="editAssignedTo" readonly> <span
+								class="user-icon" id="editUserPopup">👤</span>
+						</div>
+	
+						<label for="editDueDate">Due Date</label> <input type="text"
+							id="editDueDate"> <label for="editDueTime">Due
+							Time</label> <input type="text" id="editDueTime"> <label
+							for="editRelatedTo">Related To</label>
+						<div class="related-container">
+							<input type="text" id="editRelatedTo" readonly> <span
+								class="related-icon" id="editRelatedPopup">🔗</span>
+						</div>
+	
+						<div class="task-form-buttons">
+							<button class="save-btn" id="updateTask">Update</button>
+							<button class="cancel-btn" id="cancelEdit">Cancel</button>
+						</div>
+					</div>
+				</div>
+	
+	
+	
+				<!-- ✅ Task List -->
+				<div id="task-list" class="task-list"></div>
+	
+			</div>
+	
+	
+		</div>
+		
+		<!-- ✅ Related To USERPopup -->
+		<div id="userPopup" class="popup-overlay" style="display: none;">
+			<div class="popup-content">
+				<div class="popup-header">
+					<h3>Select a User</h3>
+					<span class="close-popup" onclick="closeUserPopup()">×</span>
+				</div>
+				<div class="popup-body">
+					<table class="popup-table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Mobile</th>
+								<th>Profile</th>
+								<th>Reporting To</th>
+							</tr>
+						</thead>
+						<tbody id="userList">
+							<!-- Leads from API will be inserted here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	
+		<!-- ✅ Related To Popup -->
+		<div id="relatedPopup" class="popup-overlay" style="display: none;">
+			<div class="popup-content">
+				<div class="popup-header">
+					<h3>Select a Lead</h3>
+					<span class="close-popup" onclick="closeRelatedPopup()">×</span>
+				</div>
+				<div class="popup-body">
+					<table class="popup-table">
+						<thead>
+							<tr>
+								<th>LEAD OWNER</th>
+								<th>LEAD DATE</th>
+								<th>CONTACT NAME</th>
+								<th>MOBILE NUMBER</th>
+								<th>LEAD STAGE</th>
+								<th>EXPECTED REVENUE</th>
+								<th>NEXT FOLLOW-UP ON</th>
+								<th>NEXT FOLLOW-UP NOTES</th>
+							</tr>
+						</thead>
+						<tbody id="relatedList">
+							<!-- Leads from API will be inserted here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	
+		<div id="completionPopup" class="completion-popup-overlay"
+			style="display: none;">
+			<div class="completion-popup-box">
+				<span class="completion-close-popup" onclick="closeCompletionPopup()">×</span>
+				<h3>Mark as Completed</h3>
+				<label for="remarks">Remarks</label>
+				<textarea id="remarks" rows="5" cols="45"></textarea>
+				<div class="completion-popup-actions">
+					<button class="completion-complete-btn">Complete</button>
+					<button class="completion-followup-btn">Create Followup</button>
+				</div>
+			</div>
+		</div>
+	
+		<!-- ✅ Follow-On Task Form -->
+		<div id="followOnTaskForm" class="follow-on-form">
+			<span class="close-btn" onclick="closeFollowOnTaskForm()">×</span>
+			<h3>Follow-On Site Visit</h3>
+	
+			<div class="form-group">
+				<label for="followAssignedTo">Assigned To</label>
+				<div class="assigned-container">
+					<input type="text" id="followAssignedTo" readonly> <span
+						class="user-icon" id="lastUserPopUp">👤</span>
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="followTaskName"><span class="required">*</span>
+					Site Visit Details</label>
+				<textarea id="followTaskName" rows="3"></textarea>
+			</div>
+	
+			<div class="form-group">
+				<label>Due On</label> <input type="text" id="followDueDate">
+				<input type="text" id="followDueTime" class="flatpickr-input">
+			</div>
+	
+			<div class="form-buttons">
+				<button class="save-btn" onclick="saveFollowOnTask()">Save</button>
+			</div>
+	
+		</div>
+	
+	
+	
+	
+	
+	
+		<script>
+	
+		</script>
+	
+	
+	</body>
+	</html>

@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ananta Realty - Custom Forms</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.readonly-input {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #666;
+    cursor: not-allowed;
+    padding: 8px;
+    width: 100%;
+}
+  /* Detail View Specific Styles */
+  .detail-view-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 15px 0;
+  }
+
+  .detail-view-overlay .lead-management-panel {
+    width: 96%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0;
+  }
+
+  .detail-view-overlay .button-panel {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    background: linear-gradient(135deg, #4CAF50, #3f37c9);
+    color: #fff;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 0;
+  }
+
+  .detail-view-overlay .lead-content {
+    padding: 15px;
+  }
+
+  .detail-view-overlay .section {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 3px solid #4CAF50;
+  }
+
+  .detail-view-overlay .section-header {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #4CAF50;
+    display: flex;
+    align-items: center;
+  }
+
+  .detail-view-overlay .section-header:after {
+    content: "";
+    flex: 1;
+    margin-left: 12px;
+    height: 1px;
+    background-color: #e9ecef;
+  }
+
+  .detail-view-overlay .field {
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .detail-view-overlay .field-label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #495057;
+    width: 180px;
+    min-width: 180px;
+    font-size: 0.85rem;
+  }
+
+  .detail-view-overlay .field-value {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 3px;
+    flex: 1;
+    min-height: 18px;
+    font-size: 0.9rem;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+  }
+
+  .detail-view-overlay .field-value:empty::before {
+    content: "-";
+    color: #6c757d;
+  }
+
+  .detail-view-overlay .two-column-fields {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .detail-view-overlay .two-column-field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .detail-view-overlay .whatsapp-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .detail-view-overlay .whatsapp-button img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  .detail-view-overlay .email-link {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+
+  .detail-view-overlay .email-link:hover {
+    text-decoration: underline;
+  }
+
+  .detail-view-overlay .confighistory {
+    width: 100%;
+    margin-top: 20px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.8rem;
+  }
+
+  .detail-view-overlay .dacamhistorylabel {
+    color: #6c757d;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .detail-view-overlay .two-column-fields {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .detail-view-overlay .field-label {
+      width: 100%;
+    }
+  }
+  /* Button Panel Styles */
+.detail-view-overlay .button-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #4CAF50, #3f37c9);
+    color: #fff;
+    border-radius: 6px 6px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+.detail-view-overlay .left-section {
+    flex: 1;
+    text-align: left;
+}
+
+.detail-view-overlay .center-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.detail-view-overlay .right-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-view-overlay .section-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.detail-view-overlay .action-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: #4CAF50;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.detail-view-overlay .action-button:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.detail-view-overlay .nav-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: #4CAF50;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.detail-view-overlay .nav-button:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.detail-view-overlay .nav-counter {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0 8px;
+    color: white;
+}
+
+/* Detail View Edit Mode Styles */
+.editable-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.editable-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.editable-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+  resize: vertical;
+}
+
+.user-icon {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Button states */
+.action-button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading Indicators */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #555;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>
+    <style>
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 24px;
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 50px;
+            justify-content: center;
+        }
+        
+        .form-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #28a745;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #28a745;
+        }
+        
+        .form-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .form-card i {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #28a745;
+            transition: all 0.3s ease;
+        }
+        
+        .form-card:hover i {
+            transform: scale(1.1);
+        }
+        
+        .form-card h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .tasks-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9f5e9 100%); }
+        .contacts-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9e9f5 100%); }
+        .notes-card { background: linear-gradient(135deg, #f8f9fa 0%, #f5e9f8 100%); }
+        .outbound-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9f5f5 100%); }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 12px;
+            }
+            
+            .form-card {
+                padding: 12px;
+            }
+            
+            .form-card i {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 22px;
+            }
+        }
+        
+        /* Data section styles */
+        #data-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        /* Top action bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-button {
+            background: #6c757d;
+            color: white;
+        }
+        .search-button {
+            background: #17a2b8;
+            color: white;
+        }
+        .add-button {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        .filter-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .filter-bar-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .records-per-page select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .refresh-button {
+            padding: 5px 10px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pagination-buttons button {
+            padding: 5px 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pagination-buttons button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .page-info {
+            margin: 0 10px;
+        }
+        .filter-dropdown select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            min-width: 150px;
+        }
+        
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        .data-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+        
+        /* No data and loading */
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .filter-bar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .filter-bar-left, .filter-bar-center, .filter-bar-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Search Container Styles */
+        #search-main-div {
+            display: none;
+            width: 100%;
+            margin-bottom: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .mainTabButtons {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .mainTabButtons button {
+            padding: 8px 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .mainTabButtons button.activeTab {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .mainFormContainer {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .mainFormContainer.visibleForm {
+            display: block;
+        }
+
+        .mainFormGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mainFormGrid input, .mainFormGrid select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .mainMatchOptions {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .mainMatchOptions label {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .mainActionButtons {
+            margin-bottom: 15px;
+        }
+
+        .mainActionButtons button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .mainAdvancedRow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .mainAdvancedRow .andLabel {
+            font-weight: bold;
+            color: #28a745;
+            min-width: 40px;
+        }
+
+        .mainAdvancedRow select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .mainAdvancedRow input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+
+        .mainButtonsContainer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mainButtonsContainer button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .generateBtn {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mainFormGrid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mainAdvancedRow {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .mainAdvancedRow .andLabel {
+                display: none;
+            }
+        }
+
+        /* loading indication  */
+        .loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #28a745;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Popup Styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.popup-content {
+  background: white;
+  width: 80%;
+  max-width: 900px;
+  max-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.popup-header {
+  background: #2a9d8f;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.close-popup {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.popup-body {
+  padding: 15px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.popup-table th, .popup-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.popup-table th {
+  background: #f4f4f4;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+}
+
+.popup-table tbody tr:hover {
+  background: #e0f7fa;
+  cursor: pointer;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Custom Forms</h2>
+        
+        <!-- Original form cards -->
+         <!-- Form cards with Font Awesome icons -->
+         <div class="form-container">
+            <div class="form-card tasks-card" onclick="loadData('tasks')">
+                <i class="fas fa-tasks"></i>
+                <h3>Tasks</h3>
+            </div>
+            <div class="form-card contacts-card" onclick="loadData('contacts')">
+                <i class="fas fa-address-book"></i>
+                <h3>Contacts</h3>
+            </div>
+            <div class="form-card notes-card" onclick="loadData('notes')">
+                <i class="fas fa-sticky-note"></i>
+                <h3>Notes</h3>
+            </div>
+            <div class="form-card outbound-card" onclick="loadData('outbound')">
+                <i class="fas fa-paper-plane"></i>
+                <h3>Outbound Mails</h3>
+            </div>
+        </div>
+        
+        <!-- Data display section (initially hidden) -->
+        <div id="data-section">
+            <!-- Top action bar -->
+            <div class="action-bar">
+                <button class="back-button" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <div class="action-buttons">
+                    <button class="search-button" onclick="toggleSearch()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button id="add-button" class="add-button">
+    					<i class="fas fa-plus"></i> Add
+					</button>
+                </div>
+                
+            </div>
+
+
+
+             <!-- Add this search container below the action bar -->
+    <div id="search-main-div">
+        <!-- Search Form -->
+        <div id="mainSearchForm">
+            <!-- Tabs -->
+            <div class="mainTabButtons">
+                <button id="basicBtn" class="activeTab" onclick="showForm('basic')">Basic</button>
+                <button id="advancedBtn" onclick="showForm('advanced')">Advanced</button>
+            </div>
+
+            <!-- Basic Form (will be populated dynamically) -->
+            <div id="basicForm" class="mainFormContainer visibleForm">
+                <div class="mainFormGrid" id="basicFields">
+                    <!-- Fields will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Advanced Form -->
+            <div id="advancedForm" class="mainFormContainer">
+                <!-- Match Options -->
+                <div class="mainMatchOptions">
+                    <label> Match all the following <input type="radio" name="match" value="AND" checked onclick="updateOperators()"></label>
+                    <label> Match any of the following <input type="radio" name="match" value="OR" onclick="updateOperators()"></label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mainActionButtons">
+                    <button onclick="addRow()">More</button>
+                    <button onclick="removeRow()">Fewer</button>
+                </div>
+
+                <!-- Advanced Fields Container -->
+                <div id="advancedFields">
+                    <!-- Initial Row will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="mainButtonsContainer">
+                <button class="generateBtn" onclick="generateSearch()">Generate</button>
+                <button onclick="clearForm()">Clear</button>
+                <button onclick="cancelSearch()">Cancel Search</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rest of your HTML remains the same -->
+
+
+            
+            <!-- Filter bar -->
+            <div class="filter-bar">
+                <div class="filter-bar-left">
+                    <div class="records-per-page">
+                        <span>Records per page:</span>
+                        <select id="records-per-page" onchange="changeRecordsPerPage()">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-bar-center">
+                    <button class="refresh-button" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="pagination-buttons">
+                        <button id="first-page" onclick="goToPage(1)" disabled>
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button id="prev-page" onclick="goToPreviousPage()" disabled>
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        <span class="page-info" id="page-info">Page 1 of 1</span>
+                        <button id="next-page" onclick="goToNextPage()" disabled>
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button id="last-page" onclick="goToPage('last')" disabled>
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-bar-right">
+                    <div class="filter-dropdown">
+                        <select id="data-filter" onchange="applyFilter()">
+                            <!-- Options will be added dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data table -->
+            <table class="data-table" id="data-table">
+                <thead id="table-header">
+                    <!-- Headers will be added dynamically -->
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data will be added dynamically -->
+                </tbody>
+            </table>
+            
+            <!-- No data message -->
+            <div class="no-data" id="no-data" style="display: none;">
+                No data available
+            </div>
+            
+            <!-- Loading indicator -->
+            <div class="loading" id="loading" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div id="loadingContainer" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+   <script type="text/javascript" src="custom_forms.js"></script>
+   
+   
+  <!--  view data  -->
+   
+  <div id="detail-view-overlay" class="detail-view-overlay" style="display: none;">
+  <div class="lead-management-panel">
+    <div class="button-panel">
+      <div class="left-section">
+        <span class="section-label" id="detail-view-title">Task Details</span>
+      </div>
+      <div class="center-section">
+        <button class="action-button" id="detail-edit">✏️ Edit</button>
+        <button class="action-button" id="detail-delete">🗑️ Delete</button>
+        <button class="action-button" id="detail-back">← Back</button>
+        <button class="action-button" id="detail-save" style="display: none;">💾 Save</button>
+        <button class="action-button" id="detail-cancel" style="display: none;">✖️ Cancel</button>
+      </div>
+      <div class="right-section">
+        <button class="nav-button" id="detail-prev" title="Previous">◄</button>
+        <span class="nav-counter" id="detail-counter">0/0</span>
+        <button class="nav-button" id="detail-next" title="Next">►</button>
+      </div>
+    </div>
+    
+    <div class="lead-content" id="detail-view-content">
+      <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <table class="confighistory" cellpadding="2" border="0">
+      <colgroup>
+        <col>
+        <col>
+        <col>
+      </colgroup>
+      <tbody>
+        <tr>
+          <td align="left">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="dacamhistorylabel" id="detail-last-viewed">Last Viewed Time: -</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td align="center">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="dacamhistorylabel" id="detail-modified-time">Modified Time: -</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td align="right">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="dacamhistorylabel" id="detail-created-time">Created Time: -</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ✅ Related To USERPopup -->
+		<div id="userPopup" class="popup-overlay" style="display: none;">
+			<div class="popup-content">
+				<div class="popup-header">
+					<h3>Select a User</h3>
+					<span class="close-popup" onclick="closeUserPopup()">×</span>
+				</div>
+				<div class="popup-body">
+					<table class="popup-table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Mobile</th>
+								<th>Profile</th>
+								<th>Reporting To</th>
+							</tr>
+						</thead>
+						<tbody id="userList">
+							<!-- Leads from API will be inserted here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<!-- ✅ Related To Popup -->
+		<div id="relatedPopup" class="popup-overlay" style="display: none;">
+			<div class="popup-content">
+				<div class="popup-header">
+					<h3>Select a Lead</h3>
+					<span class="close-popup" onclick="closeRelatedPopup()">×</span>
+				</div>
+				<div class="popup-body">
+					<table class="popup-table">
+						<thead>
+							<tr>
+								<th>LEAD OWNER</th>
+								<th>LEAD DATE</th>
+								<th>CONTACT NAME</th>
+								<th>MOBILE NUMBER</th>
+								<th>LEAD STAGE</th>
+								<th>EXPECTED REVENUE</th>
+								<th>NEXT FOLLOW-UP ON</th>
+								<th>NEXT FOLLOW-UP NOTES</th>
+							</tr>
+						</thead>
+						<tbody id="relatedList">
+							<!-- Leads from API will be inserted here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<!-- User Selection Popup -->
+<div id="userPopup" class="popup-overlay" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-header">
+      <h3>Select a User</h3>
+      <span class="close-popup" onclick="closeUserPopup()">×</span>
+    </div>
+    <div class="popup-body">
+      <input type="text" id="userSearch" placeholder="Search users..." class="search-input">
+      <table class="popup-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+          </tr>
+        </thead>
+        
+        <tbody id="userList">
+          <!-- Users will be inserted here -->
+        </tbody>
+      </table>
+      <div id="userLoading" class="loading-indicator" style="display: none;">
+  <div class="loading-spinner"></div>
+  <div>Loading users...</div>
+</div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Lead Selection Popup -->
+<div id="leadPopup" class="popup-overlay" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-header">
+      <h3>Select a Lead</h3>
+      <span class="close-popup" onclick="closeLeadPopup()">×</span>
+    </div>
+    <div class="popup-body">
+      <input type="text" id="leadSearch" placeholder="Search leads..." class="search-input">
+      
+      <table class="popup-table">
+        <thead>
+          <tr>
+            <th>Contact Name</th>
+            <th>Mobile</th>
+            <th>Lead Owner</th>
+            <th>Lead Stage</th>
+          </tr>
+        </thead>
+        <tbody id="leadList">
+          <!-- Leads will be inserted here -->
+          
+        </tbody>
+      </table>
+      <!-- Add this to your popups -->
+<div id="leadLoading" class="loading-indicator" style="display: none;">
+  <div class="loading-spinner"></div>
+  <div>Loading leads...</div>
+</div>
+    </div>
+  </div>
+  
+</div>
+
+
+</body>
+</html>

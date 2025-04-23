@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Log</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .tabs a.active {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+        }
+        .tabs a:hover {
+            color: #28a745;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+        .search-bar button {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background-color: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .controls .records-per-page select {
+            padding: 6px;
+            border: 1px solid #28a745;
+            border-radius: 4px;
+            color: #28a745;
+        }
+        .pagination {
+            display: flex;
+            align-items: center;
+        }
+        .pagination button {
+            padding: 6px 12px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        .pagination span {
+            margin: 0 10px;
+        }
+        .refresh-btn {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .sort-options select {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        td {
+            font-size: 14px;
+        }
+        th input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <a href="#">Field Customization</a>
+            <a href="#">User Mobile Settings</a>
+            <a href="#">Distribution Rules</a>
+            <a href="#">Sender Email Address</a>
+            <a href="#">Import Log</a>
+            <a href="#" class="active">Audit Log</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+            <button>🔍</button>
+        </div>
+        <div class="controls">
+            <div class="records-per-page">
+                <label>Records per page</label>
+                <select>
+                    <option>50</option>
+                    <option>100</option>
+                    <option>200</option>
+                </select>
+            </div>
+            <div class="pagination">
+                <button disabled>◄◄</button>
+                <button disabled>◄</button>
+                <span>1 - 50 / 53966</span>
+                <button>►</button>
+                <button>►►</button>
+            </div>
+            <div class="refresh-btn">⟳ Refresh</div>
+            <div class="sort-options">
+                <select>
+                    <option>Recently Created</option>
+                    <option>Oldest First</option>
+                </select>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>User</th>
+                    <th>Screen Name</th>
+                    <th>Activity</th>
+                    <th>Details</th>
+                    <th>Device</th>
+                    <th>Performed At</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Lavanya</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:18 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Mallika</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:18 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Lavanya</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:17 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>UMA Maheshwari</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:16 AM</td>
+                    <td>25.01.01, Android, 12, 220</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Mahalakshmi</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:16 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Sravani</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:16 AM</td>
+                    <td>25.01.01, Android, 12, Red Note 9 Pro, Xiaomi, e60c18cd80</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Mallika</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:15 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>Lavanya</td>
+                    <td>Leads</td>
+                    <td>Created</td>
+                    <td>-</td>
+                    <td>Mobile</td>
+                    <td>18-Apr-2025 11:15 AM</td>
+                    <td>25.01.01, Android, 14, RM</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="actions">
+            <button>✏️</button>
+            <button>🗑️</button>
+        </div>
+    </div>
+</body>
+</html>
